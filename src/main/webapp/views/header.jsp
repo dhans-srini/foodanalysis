@@ -1,4 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <style>
 ul.topnav {
@@ -49,9 +50,10 @@ ul.topnav li.right {
 	top: 10px;
 }
 </style>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/bootstrap.min.css">
+<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
@@ -70,22 +72,34 @@ ul.topnav li.right {
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false">Login <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="userloginview">User Login</a></li>
-						<li><a href="userLogin.jsp">Admin Login</a></li>
-					</ul></li>
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false">Register <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="usrregistration">User Register</a></li>
-						<li><a href="./register.request">Admin Register</a></li>
-					</ul></li>
-			</ul>
+			<c:if
+				test="${sessionScope.adminUser eq null and sessionScope.user eq null}">
+				<ul class="nav navbar-nav">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Login <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="userloginview">User Login</a></li>
+							<li><a
+								href="${pageContext.request.contextPath}/adminUserLoginView">Admin
+									Login</a></li>
+						</ul></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Register <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="usrregistration">User Register</a></li>
+							<li><a
+								href="${pageContext.request.contextPath}/adminUserRegistration">Admin
+									Register</a></li>
+						</ul></li>
+				</ul>
+			</c:if>
+			<c:if
+				test="${sessionScope.adminUser ne null or sessionScope.user ne null}">
+				<a href="${pageContext.request.contextPath}/logout">logout</a>
+			</c:if>
+
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-haspopup="true"

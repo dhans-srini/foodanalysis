@@ -10,9 +10,8 @@ import org.springframework.validation.Validator;
 
 import com.foodanalysis.model.User;
 
-@SuppressWarnings("deprecation")
 @Component
-public class UserValidator implements Validator {
+public class UserUpdateValidator implements Validator {
 
   @Override
   public boolean supports(Class<?> cls) {
@@ -23,16 +22,9 @@ public class UserValidator implements Validator {
   public void validate(Object target, Errors errors) {
     rejectIfEmptyOrWhitespace(errors, "firstName", "err_first_name", "First Name is Required");
     rejectIfEmptyOrWhitespace(errors, "lastName", "err_last_name", "Last Name is Required");
-    rejectIfEmptyOrWhitespace(errors, "email", "err_email", "Email is required");
-    rejectIfEmptyOrWhitespace(errors, "passwordString", "err_pass_req", "Password is required");
-    rejectIfEmptyOrWhitespace(errors, "confirmPasswordString", "err_conf_pass_req",
-        "Confirm Password is required");
     User user = (User) target;
     if (user.getAge().equals("NONE")) {
       errors.rejectValue("age", "err_age", "Age is Required");
-    }
-    if (!EmailValidator.getInstance().isValid(user.getEmail())) {
-      errors.rejectValue("email", "err_email_invalid", "Invalid email");
     }
     if (isNotEmpty(user.getWeightString()) && !isValidNumber(user.getWeightString().toString())) {
       errors.rejectValue("weightString", "err_weightString", "Invalid weight");
@@ -50,15 +42,6 @@ public class UserValidator implements Validator {
     if (isNotEmpty(user.getPhone())
         && (!isValidNumber(user.getPhone()) || user.getPhone().length() != 10)) {
       errors.rejectValue("phone", "err_phone", "Invalid  phone");
-    }
-
-    if (user.getPasswordString() != null
-        && !user.getPasswordString().equals(user.getConfirmPasswordString())) {
-      errors.rejectValue("passwordString", "err_pass_mismatch",
-          "Password and Confirm Password mismatch");
-    } else if (user.getPasswordString() != null && user.getPasswordString().length() < 5) {
-      errors.rejectValue("passwordString", "err_pass_len",
-          "Password should be atleast 5 character.");
     }
   }
 

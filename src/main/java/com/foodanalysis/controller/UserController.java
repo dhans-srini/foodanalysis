@@ -1,5 +1,7 @@
 package com.foodanalysis.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.validator.EmailValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.foodanalysis.biz.UserService;
 import com.foodanalysis.biz.exception.BusinessServiceException;
 import com.foodanalysis.model.User;
+import com.foodanalysis.validator.UserUpdateValidator;
 import com.foodanalysis.validator.UserValidator;
 
+@SuppressWarnings("deprecation")
 @Controller
 public class UserController {
 
@@ -28,6 +32,8 @@ public class UserController {
 
   @Autowired
   private UserValidator userValidator;
+  @Autowired
+  private UserUpdateValidator userUpdateValidator;
 
   @GetMapping("/")
   public String welcome() {
@@ -45,16 +51,41 @@ public class UserController {
     return "userLogin";
   }
 
+  @RequestMapping(value = "/userprofile/{id}", method = RequestMethod.GET)
+  public String gotoUserProfile(@PathVariable int id, Model model,
+      @RequestParam(required = false) String page) {
+    User user = null;
+    try {
+      user = userService.doGetUserById(id);
+
+      if (user.getWeight() != null) {
+        user.setWeightString(user.getWeight().toString());
+      }
+      if (user.getHeightInFeets() != null) {
+        user.setHeightInFeetsString(user.getHeightInFeets().toString());
+      }
+      if (user.getHeightWithRemainingInch() != null) {
+        user.setHeightWithRemainingInchString(user.getHeightWithRemainingInch().toString());
+      }
+
+      model.addAttribute("user", user);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "/userProfile";
+  }
+
   @RequestMapping(value = "/doRegisterUser", method = RequestMethod.POST)
   public String saveUser(@ModelAttribute("user") User user, BindingResult bindingResult,
-      Model model) {
+      Model model, HttpSession session) {
     try {
       userValidator.validate(user, bindingResult);
       if (bindingResult.hasErrors()) {
         return "userRegistration";
       }
       userService.doSaveUser(user);
-      return "userWelcome";
+      session.setAttribute("user", user);
+      return "redirect:views/userDashboard.jsp?msg=success";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -65,15 +96,38 @@ public class UserController {
     return "userRegistration";
   }
 
+  @RequestMapping(value = "/doUpdateUser", method = RequestMethod.POST)
+  public String updateUser(@ModelAttribute("user") User user, BindingResult bindingResult,
+      Model model, @RequestParam(required = false) String page) {
+    try {
+      userUpdateValidator.validate(user, bindingResult);
+      if (bindingResult.hasErrors()) {
+        return "userProfile";
+      }
+      userService.doUpdateUser(user);
+      model.addAttribute("info", "User updated successfully");
+      return page == null ? "userDashboard" : "redirect:viewUsers?msg=user_upd_success";
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+      logger.error(e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      model.addAttribute("error", "System has some issue...");
+    }
+    return "userProfile";
+  }
+
   @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
   public String login(@RequestParam("email") String email,
-      @RequestParam("password") String password, Model model) {
+      @RequestParam("password") String password, Model model, HttpSession session) {
     try {
       if (!EmailValidator.getInstance().isValid(email)) {
         model.addAttribute("error", "Invalid email id");
       }
-      userService.doAuthenticateUser(email, password);
-      return "userWelcome";
+      User user = userService.doAuthenticateUser(email, password);
+      session.setAttribute("user", user);
+
+      return "redirect:views/userDashboard.jsp";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -82,6 +136,40 @@ public class UserController {
       model.addAttribute("error", "System has some issue...");
     }
     return "userLogin";
+  }
+
+  @RequestMapping(value = "/doChangeUserPassword", method = RequestMethod.POST)
+  public String changePassword(@RequestParam("passwordString") String password,
+      @RequestParam("confirmPasswordString") String confirmPassword, Model model,
+      HttpSession session) {
+    try {
+      if (password != null && !password.equals(confirmPassword)) {
+        model.addAttribute("error", "Password and Confirm Password mismatch");
+      } else if (password != null && password.length() < 5) {
+        model.addAttribute("error", "Password should be atleast 5 character.");
+      } else {
+        User user = (User) session.getAttribute("user");
+        userService.doUpdateUserPassword(user, password);
+        return "redirect:views/userDashboard.jsp?msg=pwd_suc";
+      }
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+      logger.error(e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      model.addAttribute("error", "System has some issue...");
+    }
+    return "userChangePassword";
+  }
+
+  @RequestMapping(value = "/logout", method = RequestMethod.GET)
+  public String logout(HttpSession session) {
+    try {
+      session.invalidate();
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+    }
+    return "redirect:/";
   }
 
 }

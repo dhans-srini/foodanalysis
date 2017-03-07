@@ -1,6 +1,7 @@
 package com.foodanalysis.data.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -12,11 +13,11 @@ import com.foodanalysis.data.access.DataModifier;
 import com.foodanalysis.data.access.DataRetriver;
 import com.foodanalysis.data.access.exception.DuplicateRecordException;
 import com.foodanalysis.data.exception.DataServiceException;
+import com.foodanalysis.model.AdminUser;
 import com.foodanalysis.model.User;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
-  private static Logger logger = Logger.getLogger(UserDAOImpl.class);
   @Autowired
   private DataRetriver dataRetriver;
   @Autowired
@@ -59,8 +60,64 @@ public class UserDAOImpl implements UserDAO {
       Map<String, Object> params = new HashMap<>();
       params.put("emailId", email);
       return dataRetriver.retrieveObjectByHQL("From User u where u.email=:emailId", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public User getUserById(int id) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("id", id);
+      return dataRetriver.retrieveObjectByHQL("From User u where u.id=:id", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public void saveAdminUser(AdminUser adminUser) throws DataServiceException {
+    try {
+      dataModifier.insert(adminUser);
     } catch (DuplicateRecordException de) {
       throw new DataServiceException("Email already exist.", de);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public AdminUser getAdminUserById(int id) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("id", id);
+      return dataRetriver.retrieveObjectByHQL("From AdminUser u where u.id=:id", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public AdminUser getAdminUserByEmail(String email) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("emailId", email);
+      return dataRetriver.retrieveObjectByHQL("From AdminUser u where u.email=:emailId", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public List<User> getAllUsers() throws DataServiceException {
+    try {
+      return dataRetriver.retrieveByHQL("From User u");
     } catch (Exception e) {
       throw new DataServiceException(e.getMessage(), e);
     }
