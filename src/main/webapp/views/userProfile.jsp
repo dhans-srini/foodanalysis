@@ -49,12 +49,12 @@
 		<tr>
 			<form:hidden path="id" />
 			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" /></td>
+			<td><form:input path="firstName" required="required" /></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" /></td>
+			<td><form:input path="lastName" required="required" /></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 
@@ -65,8 +65,9 @@
 
 		<tr>
 			<td><form:label path="age">Age</form:label></td>
-			<td><form:select path="age">
-					<form:option value="NONE" label="--- Select ---" />
+			<td><form:select path="age" required="required"
+					aria-required="true">
+					<form:option value="" label="Choose" />
 					<form:option value="Between 18 to 30" label="Between 18 to 30" />
 					<form:option value="Between 31 to 50" label="Between 31 to 50" />
 					<form:option value="Between 51 to 70" label="Between 51 to 70" />
@@ -85,14 +86,14 @@
 		</tr>
 		<tr>
 			<td><form:label path="weightString">Weight</form:label></td>
-			<td><form:input path="weightString" /></td>
+			<td><form:input path="weightString" cssClass="numeric" /></td>
 			<td><form:errors path="weightString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="HeightInFeetsString">Height</form:label></td>
-			<td><form:input path="HeightInFeetsString" /> Feets <form:label
-					path="HeightWithRemainingInchString"></form:label> <form:input
-					path="HeightWithRemainingInchString" /></td>Inches
+			<td><form:input path="HeightInFeetsString" cssClass="numeric" />
+				Feets <form:input path="HeightWithRemainingInchString"
+					cssClass="numeric" />Inches</td>
 			<td><form:errors path="HeightInFeetsString" cssClass="error" />
 				<form:errors path="HeightWithRemainingInchString" cssClass="error" /></td>
 		</tr>
@@ -106,7 +107,7 @@
 		</tr>
 		<tr>
 			<td><form:label path="phone">Phone</form:label></td>
-			<td><form:input path="phone" /></td>
+			<td><form:input path="phone" cssClass="numeric" /></td>
 			<td><form:errors path="phone" cssClass="error" /></td>
 		</tr>
 		<c:if test="${param.page ne null}">
@@ -116,7 +117,7 @@
 			</tr>
 		</c:if>
 		<tr>
-			<td><input type="submit" value="Submit" /></td>
+			<td><input type="submit" value="Submit" class="btn btn-info"/></td>
 			<td><c:if test="${param.page eq null}">
 					<a
 						href="${pageContext.request.contextPath}/views/userDashboard.jsp"
@@ -128,5 +129,13 @@
 		</tr>
 
 	</table>
-
+	<script type="text/javascript">
+	$(".numeric").keypress(function (e) {
+		 $(e.target).parent().find('.error').remove();
+	     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+	        $(e.target).parent().append($('<span class="error"> Numbers only</span>'));
+	        return false;
+	    }
+	   });
+	</script>
 </form:form>

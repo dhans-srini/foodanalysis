@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.foodanalysis.biz.exception.BusinessServiceException;
 import com.foodanalysis.model.AdminUser;
+import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 public interface UserService {
@@ -31,6 +33,12 @@ public interface UserService {
       throws BusinessServiceException;
 
   List<User> doGetAllUsers() throws BusinessServiceException;
+
+  List<ContactUsInfo> doGetAllContactUsInfo() throws BusinessServiceException;
+
+  List<SearchItem> doGetSearchItems(String search, User user) throws BusinessServiceException;
+
+  void doChangePassword(String email) throws BusinessServiceException;
 
 
 

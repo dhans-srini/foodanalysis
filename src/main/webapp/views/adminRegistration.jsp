@@ -37,8 +37,8 @@
 
 
 
-<form:form method="POST" action="doRegisterAdminUser"
-	modelAttribute="adminUser">
+<form:form method="POST" action="doRegisterAdminUser" id="adminRegFrom"
+	onsubmit="validate()" modelAttribute="adminUser">
 	<c:if test="${not empty error}">
 		<span class="error">Error: ${error}</span>
 	</c:if>
@@ -46,44 +46,49 @@
 	<table>
 		<tr>
 			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" /></td>
+			<td><form:input path="firstName" required="required" /></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" /></td>
+			<td><form:input path="lastName" required="required" /></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="email">Email</form:label></td>
-			<td><form:input path="email" /></td>
+			<td><form:input path="email" type="email" required="required" /></td>
 			<td><form:errors path="email" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="passwordString">password</form:label></td>
-			<td><form:password path="passwordString" /></td>
+			<td><form:password path="passwordString" required="required"
+					id="password" name="password" /></td>
 			<td><form:errors path="passwordString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="confirmPasswordString">Confirm Password</form:label></td>
-			<td><form:password path="confirmPasswordString" /></td>
+			<td><form:password path="confirmPasswordString"
+					id="confirmPassword" name="confirmPassword" required="required" /></td>
 			<td><form:errors path="confirmPasswordString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="secondPasswordString"> Second Password</form:label></td>
-			<td><form:password path="secondPasswordString" /></td>
+			<td><form:password path="secondPasswordString"
+					required="required" /></td>
 			<td><form:errors path="secondPasswordString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="confirmSecondPasswordString">Confirm Second Password</form:label></td>
-			<td><form:password path="confirmSecondPasswordString" /></td>
+			<td><form:password path="confirmSecondPasswordString"
+					required="required" /></td>
 			<td><form:errors path="confirmSecondPasswordString"
 					cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><input type="submit" value="Submit" /></td>
+			<td><input type="submit" value="Submit" class="btn btn-info" />
+				<a href="${pageContext.request.contextPath}" class="btn btn-info"
+				role="button">Back</a></td>
 		</tr>
 
 	</table>
-
 </form:form>

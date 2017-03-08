@@ -5,17 +5,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ include file="header.jsp"%>
 
-<h1 style="">User login</h1>
+<h1 style="">User forgot password</h1>
 <br />
 <div class="col-sm-12">
 	<c:if test="${not empty error}">
 		<span class="error">Error: ${error}</span>
 	</c:if>
+	<span>${info}</span>
 </div>
 
 <div class="col-sm-5">
 	<form class="form-horizontal" method="post"
-		action="${pageContext.request.contextPath}/doLogin">
+		action="${pageContext.request.contextPath}/forgotpwd">
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="email">Email:</label>
 			<div class="col-sm-10">
@@ -24,24 +25,11 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="pwd">Password:</label>
-			<div class="col-sm-10">
-				<input type="password" class="form-control" id="password"
-					name="password" placeholder="Enter password">
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<a href="${pageContext.request.contextPath}/views/userForgotPwd.jsp">Forgot
-					Password?</a>
-			</div>
-		</div>
-		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<input type="submit" name="loginBtn" value="Submit"
 					class="btn btn-info" /> <a
-					href="${pageContext.request.contextPath}" class="btn btn-info"
-					role="button">Back</a>
+					href="${pageContext.request.contextPath}/views/userLogin.jsp"
+					class="btn btn-info" role="button">Back</a>
 			</div>
 		</div>
 	</form>

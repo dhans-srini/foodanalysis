@@ -54,7 +54,7 @@
 				name="confirmPasswordString" required></input></td>
 		</tr>
 		<tr>
-			<td><input type="submit" value="Submit" /></td>
+			<td><input type="submit" value="Submit" class="btn btn-info"/></td>
 			<td><a
 				href="${pageContext.request.contextPath}/views/userDashboard.jsp"
 				class="btn btn-info" role="button">Back</a></td>

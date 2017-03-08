@@ -51,3 +51,6 @@ ${param.msg eq 'success'?'Account created successfully':''} ${param.msg eq 'pwd_
 <a
 	href="${pageContext.request.contextPath}/views/userChangePassword.jsp"
 	class="btn btn-info" role="button">Change Password</a>
+
+<a href="${pageContext.request.contextPath}/views/searchItems.jsp"
+	class="btn btn-info" role="button">Search Items</a>

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +13,8 @@ import com.foodanalysis.data.access.DataRetriver;
 import com.foodanalysis.data.access.exception.DuplicateRecordException;
 import com.foodanalysis.data.exception.DataServiceException;
 import com.foodanalysis.model.AdminUser;
+import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 @Repository
@@ -118,6 +119,29 @@ public class UserDAOImpl implements UserDAO {
   public List<User> getAllUsers() throws DataServiceException {
     try {
       return dataRetriver.retrieveByHQL("From User u");
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public List<ContactUsInfo> getAllContactUsInfo() throws DataServiceException {
+    try {
+      return dataRetriver.retrieveByHQL("From ContactUsInfo u");
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public List<SearchItem> getSearchItems(String search) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("search", "%"+search+"%");
+      return dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ",
+          params);
     } catch (Exception e) {
       throw new DataServiceException(e.getMessage(), e);
     }

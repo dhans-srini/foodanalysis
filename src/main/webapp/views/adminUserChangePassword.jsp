@@ -65,8 +65,8 @@
 				name="confSecPassword" required></input></td>
 		</tr>
 		<tr>
-			<td><input type="submit" value="Submit" /></td>
-			<td><a
+			<td><input type="submit" value="Submit" class="btn btn-info" />
+				<a
 				href="${pageContext.request.contextPath}/views/adminUserDashboard.jsp"
 				class="btn btn-info" role="button">Back</a></td>
 		</tr>

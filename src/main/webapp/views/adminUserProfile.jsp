@@ -62,7 +62,7 @@
 			<td><form:input path="email" readonly="true" /></td>
 		</tr>
 		<tr>
-			<td><input type="submit" value="Submit" /></td>
+			<td><input type="submit" value="Submit" class="btn btn-info"/></td>
 			<td><a
 				href="${pageContext.request.contextPath}/views/adminUserDashboard.jsp"
 				class="btn btn-info" role="button">Back</a></td>

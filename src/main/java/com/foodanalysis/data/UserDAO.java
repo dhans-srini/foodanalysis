@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.foodanalysis.data.exception.DataServiceException;
 import com.foodanalysis.model.AdminUser;
+import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 public interface UserDAO {
@@ -21,6 +23,10 @@ public interface UserDAO {
   AdminUser getAdminUserByEmail(String email) throws DataServiceException;
 
   List<User> getAllUsers() throws DataServiceException;
+
+  List<ContactUsInfo> getAllContactUsInfo() throws DataServiceException;
+
+  List<SearchItem> getSearchItems(String search) throws DataServiceException;
 
 
 

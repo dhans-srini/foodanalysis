@@ -1,5 +1,7 @@
 package com.foodanalysis.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.validator.EmailValidator;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.foodanalysis.biz.UserService;
 import com.foodanalysis.biz.exception.BusinessServiceException;
+import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 import com.foodanalysis.validator.UserUpdateValidator;
 import com.foodanalysis.validator.UserValidator;
@@ -98,15 +102,18 @@ public class UserController {
 
   @RequestMapping(value = "/doUpdateUser", method = RequestMethod.POST)
   public String updateUser(@ModelAttribute("user") User user, BindingResult bindingResult,
-      Model model, @RequestParam(required = false) String page) {
+      Model model, @RequestParam(required = false) String page, HttpSession session) {
     try {
       userUpdateValidator.validate(user, bindingResult);
       if (bindingResult.hasErrors()) {
         return "userProfile";
       }
       userService.doUpdateUser(user);
+      if (session.getAttribute("adminUser") == null) {
+        session.setAttribute("user", user);
+      }
       model.addAttribute("info", "User updated successfully");
-      return page == null ? "userDashboard" : "redirect:viewUsers?msg=user_upd_success";
+      return "".equals(page) ? "userDashboard" : "redirect:viewUsers?msg=user_upd_success";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -162,6 +169,24 @@ public class UserController {
     return "userChangePassword";
   }
 
+  @RequestMapping(value = "/forgotpwd", method = RequestMethod.POST)
+  public String changePassword(@RequestParam String email, Model model) {
+    try {
+
+      userService.doChangePassword(email);
+      model.addAttribute("info", "Pasword send to that email.");
+      return "userForgotPwd";
+
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+      logger.error(e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      model.addAttribute("error", "System has some issue...");
+    }
+    return "userForgotPwd";
+  }
+
   @RequestMapping(value = "/logout", method = RequestMethod.GET)
   public String logout(HttpSession session) {
     try {
@@ -170,6 +195,31 @@ public class UserController {
       logger.error(e.getMessage(), e);
     }
     return "redirect:/";
+  }
+
+  @RequestMapping(value = "/contactus", method = RequestMethod.GET)
+  public String gotoUserProfile(Model model) {
+    List<ContactUsInfo> contact = null;
+    try {
+      contact = userService.doGetAllContactUsInfo();
+      model.addAttribute("contactus", contact);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "contact";
+  }
+
+  @RequestMapping(value = "/searchItem", method = RequestMethod.GET)
+  public String searchItem(Model model, @RequestParam String search, HttpSession session) {
+    List<SearchItem> searchItems = null;
+    try {
+      User user = (User) session.getAttribute("user");
+      searchItems = userService.doGetSearchItems(search, user);
+      model.addAttribute("searchItems", searchItems);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "searchItems";
   }
 
 }

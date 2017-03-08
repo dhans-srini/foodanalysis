@@ -66,7 +66,15 @@ ul.topnav li.right {
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="./index.request">Home</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}">Home</a>
+			<c:if test="${sessionScope.user ne null}">
+				<a class="navbar-brand"
+					href="${pageContext.request.contextPath}/views/userDashboard.jsp">Dashboard</a>
+			</c:if>
+			<c:if test="${sessionScope.adminUser ne null}">
+				<a class="navbar-brand"
+					href="${pageContext.request.contextPath}/views/adminUserDashboard.jsp">Dashboard</a>
+			</c:if>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -79,7 +87,7 @@ ul.topnav li.right {
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Login <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="userloginview">User Login</a></li>
+							<li><a href="${pageContext.request.contextPath}/userloginview">User Login</a></li>
 							<li><a
 								href="${pageContext.request.contextPath}/adminUserLoginView">Admin
 									Login</a></li>
@@ -88,28 +96,20 @@ ul.topnav li.right {
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Register <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="usrregistration">User Register</a></li>
+							<li><a href="${pageContext.request.contextPath}/usrregistration">User Register</a></li>
 							<li><a
 								href="${pageContext.request.contextPath}/adminUserRegistration">Admin
 									Register</a></li>
 						</ul></li>
 				</ul>
 			</c:if>
-			<c:if
-				test="${sessionScope.adminUser ne null or sessionScope.user ne null}">
-				<a href="${pageContext.request.contextPath}/logout">logout</a>
-			</c:if>
-
 			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false">Reports <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Update details</a></li>
-						<li><a href="#">My Account</a></li>
-					</ul></li>
-				<li><a href="./aboutus.request">About us</a></li>
-				<li><a href="./contact.request">Contact us</a></li>
+				<c:if
+					test="${sessionScope.adminUser ne null or sessionScope.user ne null}">
+					<li><a href="${pageContext.request.contextPath}/logout">logout</a></li>
+				</c:if>
+				<li><a href="${pageContext.request.contextPath}/views/aboutus.jsp">About us</a></li>
+				<li><a href="${pageContext.request.contextPath}/contactus">Contact us</a></li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

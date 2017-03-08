@@ -8,8 +8,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.foodanalysis.biz.UserService;
@@ -18,6 +21,8 @@ import com.foodanalysis.biz.utils.PasswordUtils;
 import com.foodanalysis.data.UserDAO;
 import com.foodanalysis.data.exception.DataServiceException;
 import com.foodanalysis.model.AdminUser;
+import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 @Service
@@ -27,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserDAO userDAO;
+  @Autowired
+  private JavaMailSender mailSender;
 
   @Override
   public void doSaveUser(User user) throws BusinessServiceException {
@@ -118,7 +125,9 @@ public class UserServiceImpl implements UserService {
       } else {
         updateUser.setHeightWithRemainingInch(null);
       }
-      updateUser.setIsActive(user.getIsActive());
+      if (user.getIsActive() != null) {
+        updateUser.setIsActive(user.getIsActive());
+      }
       userDAO.saveUser(updateUser);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
@@ -251,6 +260,69 @@ public class UserServiceImpl implements UserService {
       throw new BusinessServiceException(e.getLocalizedMessage(), e);
     }
     return users;
+  }
+
+  @Override
+  public List<ContactUsInfo> doGetAllContactUsInfo() throws BusinessServiceException {
+    List<ContactUsInfo> contact = null;
+    try {
+      contact = userDAO.getAllContactUsInfo();
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return contact;
+  }
+
+  @Override
+  public List<SearchItem> doGetSearchItems(String search, User user)
+      throws BusinessServiceException {
+    List<SearchItem> searchItems = null;
+    try {
+      searchItems = userDAO.getSearchItems(search);
+      if (CollectionUtils.isEmpty(searchItems)) {
+        List<ContactUsInfo> contactUsInfos = userDAO.getAllContactUsInfo();
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom("foodanalysis");
+        email.setTo(
+            contactUsInfos.stream().map(ContactUsInfo::getEmail).toArray(s -> new String[s]));
+        email.setSubject("Search not found");
+        email.setText("The user " + user.getFirstName() + " " + user.getLastName() + "("
+            + user.getEmail() + ") searched the '" + search + "'.");
+
+        // sends the e-mail
+        mailSender.send(email);
+      }
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return searchItems;
+  }
+
+  @Override
+  public void doChangePassword(String email) throws BusinessServiceException {
+    try {
+      User userUpdate = userDAO.getUserByEmail(email);
+      if (userUpdate == null) {
+        throw new BusinessServiceException("Email not registered.");
+      }
+      String passwordString = PasswordUtils.generateRandomPassword(6);
+      byte[] salt = getNextSalt();
+      byte[] password = hash(passwordString.toCharArray(), salt);
+      userUpdate.setPasswordSalt(salt);
+      userUpdate.setPassword(password);
+      userDAO.saveUser(userUpdate);
+      SimpleMailMessage msg = new SimpleMailMessage();
+      msg.setFrom("foodanalysis");
+      msg.setTo(email);
+      msg.setSubject("New Password for food analysis");
+      msg.setText("Your new Password " + passwordString);
+      mailSender.send(msg);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
   }
 
 

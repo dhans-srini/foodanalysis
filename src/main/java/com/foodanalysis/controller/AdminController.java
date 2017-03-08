@@ -84,13 +84,14 @@ public class AdminController {
 
   @RequestMapping(value = "/doUpdateAdminUser", method = RequestMethod.POST)
   public String updateUser(@ModelAttribute("adminUser") AdminUser adminUser,
-      BindingResult bindingResult, Model model) {
+      BindingResult bindingResult, Model model, HttpSession session) {
     try {
       userUpdateValidator.validate(adminUser, bindingResult);
       if (bindingResult.hasErrors()) {
         return "adminUserProfile";
       }
       userService.doUpdateAdminUser(adminUser);
+      session.setAttribute("adminUser", adminUser);
       return "redirect:views/adminUserDashboard.jsp?msg=prof_upd_suc";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
