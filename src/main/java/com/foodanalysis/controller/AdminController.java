@@ -58,8 +58,7 @@ public class AdminController {
         return "adminRegistration";
       }
       userService.doSaveAdminUser(adminUser);
-      session.setAttribute("adminUser", adminUser);
-      return "redirect:views/adminUserDashboard.jsp?msg=success";
+      model.addAttribute("info", "Account created successfully. Goto login page for login...");
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -67,7 +66,7 @@ public class AdminController {
       logger.error(e.getMessage(), e);
       model.addAttribute("error", "System has some issue...");
     }
-    return "userRegistration";
+    return "adminRegistration";
   }
 
   @RequestMapping(value = "/adminUserprofile/{id}", method = RequestMethod.GET)

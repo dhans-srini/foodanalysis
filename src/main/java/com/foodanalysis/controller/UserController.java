@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.validator.EmailValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,8 +38,12 @@ public class UserController {
 
   @Autowired
   private UserValidator userValidator;
+
   @Autowired
   private UserUpdateValidator userUpdateValidator;
+
+  @Autowired
+  private JavaMailSender mailSender;
 
   @GetMapping("/")
   public String welcome() {
@@ -88,8 +94,7 @@ public class UserController {
         return "userRegistration";
       }
       userService.doSaveUser(user);
-      session.setAttribute("user", user);
-      return "redirect:views/userDashboard.jsp?msg=success";
+      model.addAttribute("info", "Account created successfully. Goto login page for login...");
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -220,6 +225,25 @@ public class UserController {
       model.addAttribute("error", e.getMessage());
     }
     return "searchItems";
+  }
+
+  @RequestMapping(value = "/contactusSendEmail", method = RequestMethod.POST)
+  public String searchItem(Model model, @RequestParam String fromEmail,
+      @RequestParam String toEmail, @RequestParam String cQuery) {
+    try {
+      SimpleMailMessage msg = new SimpleMailMessage();
+      msg.setFrom("Food_analysis");
+      msg.setTo(toEmail);
+      msg.setSubject("Contactus Query");
+      msg.setText("User " + fromEmail + " , asked Query : " + cQuery);
+      mailSender.send(msg);
+      model.addAttribute("info", "Query send successfully.");
+      List<ContactUsInfo> contact = userService.doGetAllContactUsInfo();
+      model.addAttribute("contactus", contact);
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "contact";
   }
 
 }

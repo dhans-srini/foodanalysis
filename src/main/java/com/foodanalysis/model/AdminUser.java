@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 @Table(name = "admin_users")
 public class AdminUser {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @Column(name = "first_name")

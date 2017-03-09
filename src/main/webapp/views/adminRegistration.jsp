@@ -39,47 +39,50 @@
 
 <form:form method="POST" action="doRegisterAdminUser" id="adminRegFrom"
 	onsubmit="validate()" modelAttribute="adminUser">
+	<c:if test="${not empty info}">
+		<span>${info}</span>
+	</c:if>
 	<c:if test="${not empty error}">
 		<span class="error">Error: ${error}</span>
 	</c:if>
 	<h1>Admin Registration</h1>
 	<table>
 		<tr>
-			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" required="required" /></td>
+			<td><form:label path="firstName" cssClass="req_start">First Name</form:label></td>
+			<td><form:input path="firstName" required="required" placeholder="Enter First Name" /></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" required="required" /></td>
+			<td><form:label path="lastName" cssClass="req_start">Last Name</form:label></td>
+			<td><form:input path="lastName" required="required" placeholder="Enter Last name"/></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="email">Email</form:label></td>
-			<td><form:input path="email" type="email" required="required" /></td>
+			<td><form:label path="email" cssClass="req_start">Email</form:label></td>
+			<td><form:input path="email" type="email" required="required" placeholder="Enter email"/></td>
 			<td><form:errors path="email" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="passwordString">password</form:label></td>
+			<td><form:label path="passwordString" cssClass="req_start">password</form:label></td>
 			<td><form:password path="passwordString" required="required"
-					id="password" name="password" /></td>
+					id="password" name="password" placeholder="Enter password"/></td>
 			<td><form:errors path="passwordString" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="confirmPasswordString">Confirm Password</form:label></td>
-			<td><form:password path="confirmPasswordString"
+			<td><form:label path="confirmPasswordString" cssClass="req_start">Confirm Password</form:label></td>
+			<td><form:password path="confirmPasswordString" placeholder="Enter confirm password"
 					id="confirmPassword" name="confirmPassword" required="required" /></td>
 			<td><form:errors path="confirmPasswordString" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="secondPasswordString"> Second Password</form:label></td>
-			<td><form:password path="secondPasswordString"
+			<td><form:label path="secondPasswordString" cssClass="req_start"> Second Password</form:label></td>
+			<td><form:password path="secondPasswordString" placeholder="Enter Second password"
 					required="required" /></td>
 			<td><form:errors path="secondPasswordString" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="confirmSecondPasswordString">Confirm Second Password</form:label></td>
-			<td><form:password path="confirmSecondPasswordString"
+			<td><form:label path="confirmSecondPasswordString" cssClass="req_start">Confirm Second Password</form:label></td>
+			<td><form:password path="confirmSecondPasswordString" placeholder="Enter confirm second password"
 					required="required" /></td>
 			<td><form:errors path="confirmSecondPasswordString"
 					cssClass="error" /></td>

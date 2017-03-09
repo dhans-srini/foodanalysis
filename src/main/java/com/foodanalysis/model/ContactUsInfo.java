@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name = "seed_contact_us_infos")
 public class ContactUsInfo {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String name;
   private String email;

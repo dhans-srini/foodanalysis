@@ -38,43 +38,50 @@
 
 
 <form:form method="POST" action="doRegisterUser" modelAttribute="user">
+	<c:if test="${not empty info}">
+		<span>${info}</span>
+	</c:if>
 	<c:if test="${not empty error}">
 		<span class="error">Error: ${error}</span>
 	</c:if>
 	<h1>Registration</h1>
 	<table>
 		<tr>
-			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" required="required" /></td>
+			<td><form:label path="firstName" cssClass="req_start">First Name</form:label></td>
+			<td><form:input placeholder="Enter First name" path="firstName" 
+					required="required" /></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" required="required" /></td>
+			<td><form:label path="lastName" cssClass="req_start">Last Name</form:label></td>
+			<td><form:input path="lastName" required="required"
+					placeholder="Enter Last name" /></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="email">Email</form:label></td>
-			<td><form:input path="email" type="email" required="required" /></td>
+			<td><form:label path="email" cssClass="req_start">Email</form:label></td>
+			<td><form:input path="email" type="email" required="required"
+					placeholder="Enter email" /></td>
 			<td><form:errors path="email" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="passwordString">password</form:label></td>
-			<td><form:password path="passwordString" required="required" /></td>
+			<td><form:label path="passwordString" cssClass="req_start">password</form:label></td>
+			<td><form:password path="passwordString" required="required"
+					placeholder="Enter password" /></td>
 			<td><form:errors path="passwordString" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="confirmPasswordString">Confirm Password</form:label></td>
+			<td><form:label path="confirmPasswordString" cssClass="req_start">Confirm Password</form:label></td>
 			<td><form:password path="confirmPasswordString"
-					required="required" /></td>
+					required="required" placeholder="Enter confirm password" /></td>
 			<td><form:errors path="confirmPasswordString" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="age">Age</form:label></td>
+			<td><form:label path="age" cssClass="req_start">Age</form:label></td>
 			<td><form:select path="age" required="required"
 					aria-required="true">
 					<form:option value="" label="Choose" />
@@ -96,34 +103,38 @@
 		</tr>
 		<tr>
 			<td><form:label path="weightString">Weight</form:label></td>
-			<td><form:input path="weightString" cssClass="numeric" /></td>
+			<td><form:input path="weightString" cssClass="numeric"
+					placeholder="Enter weight" /></td>
 			<td><form:errors path="weightString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="HeightInFeetsString">Height</form:label></td>
-			<td><form:input path="HeightInFeetsString" cssClass="numeric" />
-				Feets <form:label path="HeightWithRemainingInchString"></form:label>
-				<form:input path="HeightWithRemainingInchString" />Inches</td>
+			<td><form:input path="HeightInFeetsString" cssClass="numeric"
+					placeholder="Enter Feet" /> Feets <form:label
+					path="HeightWithRemainingInchString"></form:label> <form:input
+					path="HeightWithRemainingInchString" placeholder="Enter Inches" />Inches</td>
 			<td><form:errors path="HeightInFeetsString" cssClass="numeric" />
 				<form:errors path="HeightWithRemainingInchString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="alergies">Alergies</form:label></td>
-			<td><form:input path="alergies" /></td>
+			<td><form:input path="alergies" placeholder="Enter alergies" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="healthIssues">Health Issues</form:label></td>
-			<td><form:input path="healthIssues" /></td>
+			<td><form:input path="healthIssues"
+					placeholder="Enter Health issues" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="phone">Phone</form:label></td>
-			<td><form:input path="phone" cssClass="numeric" /></td>
+			<td><form:input path="phone" cssClass="numeric"
+					placeholder="Enter phone" /></td>
 			<td><form:errors path="phone" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><input type="submit" value="Submit" class="btn btn-info" /> <a
-				href="${pageContext.request.contextPath}" class="btn btn-info"
+			<td><input type="submit" value="Submit" class="btn btn-info" />
+				<a href="${pageContext.request.contextPath}" class="btn btn-info"
 				role="button">Back</a></td>
 		</tr>
 

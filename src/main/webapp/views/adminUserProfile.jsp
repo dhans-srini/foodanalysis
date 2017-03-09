@@ -47,18 +47,18 @@
 		<h1>User Profile</h1>
 		<tr>
 			<form:hidden path="id" />
-			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" /></td>
+			<td><form:label path="firstName" cssClass="req_start">First Name</form:label></td>
+			<td><form:input path="firstName" placeholder="Enter First name" /></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" /></td>
+			<td><form:label path="lastName" cssClass="req_start">Last Name</form:label></td>
+			<td><form:input path="lastName" placeholder="Enter Last name" /></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="email">Email</form:label></td>
+			<td><form:label path="email" cssClass="req_start">Email</form:label></td>
 			<td><form:input path="email" readonly="true" /></td>
 		</tr>
 		<tr>

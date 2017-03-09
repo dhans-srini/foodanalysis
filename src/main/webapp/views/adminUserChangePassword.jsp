@@ -44,24 +44,24 @@
 	</c:if>
 	<table>
 		<tr>
-			<td><label path="passwordString">password</label></td>
-			<td><input type="password" id="password" name="password"
+			<td><label path="passwordString" class="req_start">password</label></td>
+			<td><input type="password" id="password" name="password" placeholder="Enter password"
 				required></input></td>
 		</tr>
 		<tr>
-			<td><label path="confirmPasswordString">Confirm Password</label></td>
-			<td><input type="password" id="confPassword" name="confPassword"
+			<td><label path="confirmPasswordString" class="req_start">Confirm Password</label></td>
+			<td><input type="password" id="confPassword" name="confPassword" placeholder="Confirm password"
 				required></input></td>
 		</tr>
 		<tr>
-			<td><label path="secPasswordString">Second Password</label></td>
-			<td><input type="password" id="secPassword" name="secPassword"
+			<td><label path="secPasswordString" class="req_start">Second Password</label></td>
+			<td><input type="password" id="secPassword" name="secPassword" placeholder="Second password"
 				required></input></td>
 		</tr>
 		<tr>
-			<td><label path="confirmSecPasswordString">Confirm
+			<td><label path="confirmSecPasswordString" class="req_start">Confirm
 					Second Password</label></td>
-			<td><input type="password" id="confSecPassword"
+			<td><input type="password" id="confSecPassword" placeholder="Enter Confirm Second password"
 				name="confSecPassword" required></input></td>
 		</tr>
 		<tr>

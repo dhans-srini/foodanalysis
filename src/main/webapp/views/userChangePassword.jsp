@@ -44,13 +44,13 @@
 	</c:if>
 	<table>
 		<tr>
-			<td><label path="passwordString">password</label></td>
-			<td><input type="password" id="passwordString"
+			<td><label path="passwordString"  class="req_start">password</label></td>
+			<td><input type="password" id="passwordString" placeholder="Enter password"
 				name="passwordString" required></input></td>
 		</tr>
 		<tr>
-			<td><label path="confirmPasswordString">Confirm Password</label></td>
-			<td><input type="password" id="confirmPasswordString"
+			<td><label path="confirmPasswordString"  class="req_start">Confirm Password</label></td>
+			<td><input type="password" id="confirmPasswordString" placeholder="Enter confirm password"
 				name="confirmPasswordString" required></input></td>
 		</tr>
 		<tr>

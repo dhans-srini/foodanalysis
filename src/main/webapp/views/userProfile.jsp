@@ -48,23 +48,23 @@
 	<table>
 		<tr>
 			<form:hidden path="id" />
-			<td><form:label path="firstName">First Name</form:label></td>
-			<td><form:input path="firstName" required="required" /></td>
+			<td><form:label path="firstName" cssClass="req_start">First Name</form:label></td>
+			<td><form:input path="firstName" required="required" placeholder="Enter First name"/></td>
 			<td><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td><form:label path="lastName">Last Name</form:label></td>
-			<td><form:input path="lastName" required="required" /></td>
+			<td><form:label path="lastName" cssClass="req_start">Last Name</form:label></td>
+			<td><form:input path="lastName" required="required" placeholder="Enter Last name"/></td>
 			<td><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="email">Email</form:label></td>
-			<td><form:input path="email" readonly="true" /></td>
+			<td><form:label path="email" cssClass="req_start">Email</form:label></td>
+			<td><form:input path="email" readonly="true" placeholder="Enter Email" /></td>
 		</tr>
 
 		<tr>
-			<td><form:label path="age">Age</form:label></td>
+			<td><form:label path="age" cssClass="req_start">Age</form:label></td>
 			<td><form:select path="age" required="required"
 					aria-required="true">
 					<form:option value="" label="Choose" />
@@ -86,28 +86,28 @@
 		</tr>
 		<tr>
 			<td><form:label path="weightString">Weight</form:label></td>
-			<td><form:input path="weightString" cssClass="numeric" /></td>
+			<td><form:input path="weightString" cssClass="numeric" placeholder="Enter weight"/></td>
 			<td><form:errors path="weightString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="HeightInFeetsString">Height</form:label></td>
-			<td><form:input path="HeightInFeetsString" cssClass="numeric" />
+			<td><form:input path="HeightInFeetsString" cssClass="numeric" placeholder="Enter feet"/>
 				Feets <form:input path="HeightWithRemainingInchString"
-					cssClass="numeric" />Inches</td>
+					cssClass="numeric" placeholder="Enter Inches"/>Inches</td>
 			<td><form:errors path="HeightInFeetsString" cssClass="error" />
 				<form:errors path="HeightWithRemainingInchString" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="alergies">Alergies</form:label></td>
-			<td><form:input path="alergies" /></td>
+			<td><form:input path="alergies" placeholder="Enter alergies"/></td>
 		</tr>
 		<tr>
 			<td><form:label path="healthIssues">Health Issues</form:label></td>
-			<td><form:input path="healthIssues" /></td>
+			<td><form:input path="healthIssues" placeholder="Enter health issues"/></td>
 		</tr>
 		<tr>
 			<td><form:label path="phone">Phone</form:label></td>
-			<td><form:input path="phone" cssClass="numeric" /></td>
+			<td><form:input path="phone" cssClass="numeric" placeholder="Enter phone" /></td>
 			<td><form:errors path="phone" cssClass="error" /></td>
 		</tr>
 		<c:if test="${param.page ne null}">

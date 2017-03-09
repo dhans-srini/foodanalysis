@@ -40,6 +40,12 @@ ul.topnav li.right {
 	font-style: italic;
 }
 
+.req_start:after   {
+	color: red;
+	content: "*";
+	position: absolute;
+}
+
 @media screen and (max-width: 600px) {
 	ul.topnav li.left, ul.topnav li.right, ul.topnav li {
 		float: none;
@@ -87,7 +93,9 @@ ul.topnav li.right {
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Login <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="${pageContext.request.contextPath}/userloginview">User Login</a></li>
+							<li><a
+								href="${pageContext.request.contextPath}/userloginview">User
+									Login</a></li>
 							<li><a
 								href="${pageContext.request.contextPath}/adminUserLoginView">Admin
 									Login</a></li>
@@ -96,7 +104,9 @@ ul.topnav li.right {
 						data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false">Register <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="${pageContext.request.contextPath}/usrregistration">User Register</a></li>
+							<li><a
+								href="${pageContext.request.contextPath}/usrregistration">User
+									Register</a></li>
 							<li><a
 								href="${pageContext.request.contextPath}/adminUserRegistration">Admin
 									Register</a></li>
@@ -108,8 +118,11 @@ ul.topnav li.right {
 					test="${sessionScope.adminUser ne null or sessionScope.user ne null}">
 					<li><a href="${pageContext.request.contextPath}/logout">logout</a></li>
 				</c:if>
-				<li><a href="${pageContext.request.contextPath}/views/aboutus.jsp">About us</a></li>
-				<li><a href="${pageContext.request.contextPath}/contactus">Contact us</a></li>
+				<li><a
+					href="${pageContext.request.contextPath}/views/aboutus.jsp">About
+						us</a></li>
+				<li><a href="${pageContext.request.contextPath}/contactus">Contact
+						us</a></li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->
