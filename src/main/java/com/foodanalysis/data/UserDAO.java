@@ -28,6 +28,8 @@ public interface UserDAO {
 
   List<SearchItem> getSearchItems(String search) throws DataServiceException;
 
+  List<AdminUser> getAllAdminUsers(AdminUser adminUser) throws DataServiceException;
+
 
 
 }

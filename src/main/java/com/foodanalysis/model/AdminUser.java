@@ -41,6 +41,9 @@ public class AdminUser {
   @Column(name = "is_active")
   private Boolean isActive;
 
+  @Column(name = "is_super_admin")
+  private Boolean isSuperAdmin;
+
   @Transient
   private String passwordString;
 
@@ -155,6 +158,14 @@ public class AdminUser {
 
   public void setIsActive(Boolean isActive) {
     this.isActive = isActive;
+  }
+
+  public Boolean getIsSuperAdmin() {
+    return isSuperAdmin;
+  }
+
+  public void setIsSuperAdmin(Boolean isSuperAdmin) {
+    this.isSuperAdmin = isSuperAdmin;
   }
 
 }

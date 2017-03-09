@@ -128,6 +128,7 @@ public class UserServiceImpl implements UserService {
       if (user.getIsActive() != null) {
         updateUser.setIsActive(user.getIsActive());
       }
+      updateUser.setLastUpdatedOn(new Date());
       userDAO.saveUser(updateUser);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
@@ -170,7 +171,8 @@ public class UserServiceImpl implements UserService {
       adminUser.setConfirmSecondPasswordString(null);
 
 
-      adminUser.setIsActive(true);
+      adminUser.setIsActive(false);
+      adminUser.setIsSuperAdmin(false);
       userDAO.saveAdminUser(adminUser);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
@@ -192,12 +194,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException {
+  public AdminUser doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException {
     try {
       AdminUser updateAdminUser = userDAO.getAdminUserById(adminUser.getId());
       updateAdminUser.setFirstName(adminUser.getFirstName());
       updateAdminUser.setLastName(adminUser.getLastName());
       userDAO.saveAdminUser(updateAdminUser);
+      return updateAdminUser;
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);
@@ -318,6 +321,37 @@ public class UserServiceImpl implements UserService {
       msg.setTo(email);
       msg.setSubject("New Password for food analysis");
       msg.setText("Your new Password " + passwordString);
+      mailSender.send(msg);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+  }
+
+  @Override
+  public List<AdminUser> doGetAllAdminUsers(AdminUser adminUser) throws BusinessServiceException {
+    List<AdminUser> adminUsers = null;
+    try {
+      adminUsers = userDAO.getAllAdminUsers(adminUser);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return adminUsers;
+  }
+
+  @Override
+  public void doChangeAdminUserStatus(int userId, Boolean sts) throws BusinessServiceException {
+    try {
+      AdminUser adminUser = userDAO.getAdminUserById(userId);
+      adminUser.setIsActive(sts);
+      userDAO.saveAdminUser(adminUser);
+
+      SimpleMailMessage msg = new SimpleMailMessage();
+      msg.setFrom("foodanalysis");
+      msg.setTo(adminUser.getEmail());
+      msg.setSubject(sts ? "Account is activated." : "Account is deactivated.");
+      msg.setText("Your food analysis account is " + (sts ? "Activated" : "Deactivated"));
       mailSender.send(msg);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);

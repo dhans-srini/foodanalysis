@@ -24,7 +24,7 @@ public interface UserService {
 
   AdminUser doGetAdminUserById(int id) throws BusinessServiceException;
 
-  void doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException;
+  AdminUser doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException;
 
   void doUpdateAdminUserPassword(AdminUser adminUser, String password, String secPassword)
       throws BusinessServiceException;
@@ -39,6 +39,10 @@ public interface UserService {
   List<SearchItem> doGetSearchItems(String search, User user) throws BusinessServiceException;
 
   void doChangePassword(String email) throws BusinessServiceException;
+
+  List<AdminUser> doGetAllAdminUsers(AdminUser adminUser) throws BusinessServiceException;
+
+  void doChangeAdminUserStatus(int userId, Boolean sts) throws BusinessServiceException;
 
 
 

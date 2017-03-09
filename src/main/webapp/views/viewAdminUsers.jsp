@@ -1,5 +1,4 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -9,7 +8,7 @@
 <%@ include file="header.jsp"%>
 
 
-<span>${param.msg eq 'user_upd_success'?'User updated successfully':''}</span>
+<span>${info}</span>
 <br />
 <a
 	href="${pageContext.request.contextPath}/views/adminUserDashboard.jsp"
@@ -22,20 +21,18 @@
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Email</th>
-				<th>Last Updated on</th>
 				<th>Status</th>
 				<th>Action</th>
 			</tr>
-			<c:forEach var="user" items="${userList}" varStatus="cnt">
+			<c:forEach var="user" items="${adminUserList}" varStatus="cnt">
 				<tr>
 					<td>${cnt.count}</td>
 					<td>${user.firstName}</td>
 					<td>${user.lastName}</td>
 					<td>${user.email}</td>
-					<td><fmt:formatDate pattern="h:m a--dd-MMM-yyyy" value="${user.lastUpdatedOn}" /></td>
 					<td>${user.isActive?'Active':'Inactive'}</td>
 					<td><a
-						href="${pageContext.request.contextPath}/userprofile/${user.id}?page=admin">Edit</a></td>
+						href="${pageContext.request.contextPath}/adminUserStsUpdate/${user.id}?sts=${user.isActive?'false':'true'}">${user.isActive?'Inactivate':'Activate'}</a></td>
 				</tr>
 			</c:forEach>
 		</table>

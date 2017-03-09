@@ -139,9 +139,20 @@ public class UserDAOImpl implements UserDAO {
   public List<SearchItem> getSearchItems(String search) throws DataServiceException {
     try {
       Map<String, Object> params = new HashMap<>();
-      params.put("search", "%"+search+"%");
-      return dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ",
-          params);
+      params.put("search", "%" + search + "%");
+      return dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public List<AdminUser> getAllAdminUsers(AdminUser adminUser) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("userId", adminUser.getId());
+      return dataRetriver.retrieveByHQL("From AdminUser u where u.id!=:userId", params);
     } catch (Exception e) {
       throw new DataServiceException(e.getMessage(), e);
     }

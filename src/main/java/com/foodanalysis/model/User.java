@@ -35,6 +35,9 @@ public class User {
   @Column(name = "last_login")
   private Date lastLogin;
 
+  @Column(name = "last_updated_on")
+  private Date lastUpdatedOn;
+
   @Transient
   private String passwordString;
 
@@ -241,4 +244,11 @@ public class User {
     this.isActive = isActive;
   }
 
+  public Date getLastUpdatedOn() {
+    return lastUpdatedOn;
+  }
+
+  public void setLastUpdatedOn(Date lastUpdatedOn) {
+    this.lastUpdatedOn = lastUpdatedOn;
+  }
 }

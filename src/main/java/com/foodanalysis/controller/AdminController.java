@@ -90,8 +90,8 @@ public class AdminController {
       if (bindingResult.hasErrors()) {
         return "adminUserProfile";
       }
-      userService.doUpdateAdminUser(adminUser);
-      session.setAttribute("adminUser", adminUser);
+      AdminUser upd = userService.doUpdateAdminUser(adminUser);
+      session.setAttribute("adminUser", upd);
       return "redirect:views/adminUserDashboard.jsp?msg=prof_upd_suc";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
@@ -154,7 +154,7 @@ public class AdminController {
   }
 
   @RequestMapping(value = "/viewUsers", method = RequestMethod.GET)
-  public String gotoUserProfile(Model model) {
+  public String viewUsers(Model model) {
     List<User> users = null;
     try {
       users = userService.doGetAllUsers();
@@ -163,5 +163,34 @@ public class AdminController {
       model.addAttribute("error", e.getMessage());
     }
     return "viewUsers";
+  }
+
+  @RequestMapping(value = "/viewAdminUsers", method = RequestMethod.GET)
+  public String viewAdminUsers(Model model, HttpSession session) {
+    List<AdminUser> adminUsers = null;
+    try {
+      AdminUser adminUser = (AdminUser) session.getAttribute("adminUser");
+      adminUsers = userService.doGetAllAdminUsers(adminUser);
+      model.addAttribute("adminUserList", adminUsers);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "viewAdminUsers";
+  }
+
+  @RequestMapping(value = "/adminUserStsUpdate/{userId}", method = RequestMethod.GET)
+  public String adminUserStsUpdate(@PathVariable int userId, Model model, HttpSession session,
+      @RequestParam Boolean sts) {
+    List<AdminUser> adminUsers = null;
+    try {
+      userService.doChangeAdminUserStatus(userId, sts);
+      AdminUser adminUser = (AdminUser) session.getAttribute("adminUser");
+      adminUsers = userService.doGetAllAdminUsers(adminUser);
+      model.addAttribute("adminUserList", adminUsers);
+      model.addAttribute("info", "User updated successfully");
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "viewAdminUsers";
   }
 }
