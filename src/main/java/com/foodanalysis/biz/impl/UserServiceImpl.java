@@ -1,28 +1,20 @@
 package com.foodanalysis.biz.impl;
 
-import static com.foodanalysis.biz.utils.PasswordUtils.getNextSalt;
-import static com.foodanalysis.biz.utils.PasswordUtils.hash;
-import static com.foodanalysis.biz.utils.PasswordUtils.isExpectedPassword;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.foodanalysis.biz.UserService;
 import com.foodanalysis.biz.exception.BusinessServiceException;
-import com.foodanalysis.biz.utils.PasswordUtils;
 import com.foodanalysis.data.UserDAO;
 import com.foodanalysis.data.exception.DataServiceException;
-import com.foodanalysis.model.AdminUser;
 import com.foodanalysis.model.ContactUsInfo;
-import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 @Service
@@ -32,28 +24,18 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserDAO userDAO;
+
   @Autowired
   private JavaMailSender mailSender;
 
   @Override
-  public void doSaveUser(User user) throws BusinessServiceException {
+  public void doSaveUser(User user, String role) throws BusinessServiceException {
     try {
-      byte[] salt = getNextSalt();
-      byte[] password = hash(user.getPasswordString().toCharArray(), salt);
-      if (isNotBlank(user.getWeightString())) {
-        user.setWeight(Integer.parseInt(user.getWeightString()));
-      }
-      if (isNotBlank(user.getHeightInFeetsString())) {
-        user.setHeightInFeets(Integer.parseInt(user.getHeightInFeetsString()));
-      }
-      if (isNotBlank(user.getHeightWithRemainingInchString())) {
-        user.setHeightWithRemainingInch(Integer.parseInt(user.getHeightWithRemainingInchString()));
-      }
-      user.setPassword(password);
-      user.setPasswordSalt(salt);
-      user.setConfirmPasswordString(null);
-      user.setPasswordString(null);
-      user.setIsActive(true);
+      user.setBmi(getBMI(user.getWeight(), user.getHeight()));
+      if ("admin".equals(role)) {
+        user.setRole("admin");
+      } else
+        user.setRole("user");
       userDAO.saveUser(user);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
@@ -62,20 +44,38 @@ public class UserServiceImpl implements UserService {
 
   }
 
+  private Float getBMI(Integer weight, Integer height) {
+    Float bmi = null;
+    if (weight != null && height != null) {
+      bmi = weight / (((float) height / 100) * ((float) height / 100));
+      bmi = new BigDecimal(bmi).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+    return bmi;
+  }
+
   @Override
-  public User doAuthenticateUser(String email, String password) throws BusinessServiceException {
+  public User doAuthenticateUser(String email, String password, String dbaPassword, String role)
+      throws BusinessServiceException {
     User user = null;
     try {
       user = userDAO.getUserByEmail(email);
       if (user == null) {
         throw new BusinessServiceException("Email is not registered");
       }
-      if (!PasswordUtils.isExpectedPassword(password.toCharArray(), user.getPasswordSalt(),
-          user.getPassword())) {
+      if (user.getRole().equals("user") && role != null) {
+        throw new BusinessServiceException("Invalid login");
+      }
+      if (user.getRole().equals("admin") && !user.getRole().equals(role)) {
+        throw new BusinessServiceException("Invalid login");
+      }
+      if (!user.getPasswordString().equals(password)) {
         throw new BusinessServiceException("Invalid password");
       }
-      if (!user.getIsActive()) {
-        throw new BusinessServiceException("Your accout is deactivated.");
+      if ("admin".equals(role) && (!user.getDbaPasswordString().equals(dbaPassword))) {
+        throw new BusinessServiceException("Invalid DBA password");
+      }
+      if ("d".equals(user.getStatus())) {
+        throw new BusinessServiceException("Account is inactive");
       }
       user.setLastLogin(new Date());
       userDAO.saveUser(user);
@@ -99,37 +99,37 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void doUpdateUser(User user) throws BusinessServiceException {
+  public User doGetUserByEmail(String email) throws BusinessServiceException {
+    User user = null;
+    try {
+      user = userDAO.getUserByEmail(email);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return user;
+  }
+
+  @Override
+  public User doUpdateUser(User user) throws BusinessServiceException {
     try {
       User updateUser = userDAO.getUserById(user.getId());
-      updateUser.setFirstName(user.getFirstName());
-      updateUser.setLastName(user.getLastName());
+      updateUser.setName(user.getName());
       updateUser.setAge(user.getAge());
       updateUser.setGender(user.getGender());
       updateUser.setAlergies(user.getAlergies());
-      updateUser.setHealthIssues(user.getHealthIssues());
       updateUser.setPhone(user.getPhone());
-      if (isNotBlank(user.getWeightString())) {
-        updateUser.setWeight(Integer.parseInt(user.getWeightString()));
-      } else {
-        updateUser.setWeight(null);
-      }
-      if (isNotBlank(user.getHeightInFeetsString())) {
-        updateUser.setHeightInFeets(Integer.parseInt(user.getHeightInFeetsString()));
-      } else {
-        updateUser.setHeightInFeets(null);
-      }
-      if (isNotBlank(user.getHeightWithRemainingInchString())) {
-        updateUser
-            .setHeightWithRemainingInch(Integer.parseInt(user.getHeightWithRemainingInchString()));
-      } else {
-        updateUser.setHeightWithRemainingInch(null);
-      }
-      if (user.getIsActive() != null) {
-        updateUser.setIsActive(user.getIsActive());
+      updateUser.setWeight(user.getWeight());
+      updateUser.setHeight(user.getHeight());
+      updateUser.setFavFriendName(user.getFavFriendName());
+      updateUser.setFavMovieName(user.getFavMovieName());
+      updateUser.setBmi(getBMI(user.getWeight(), user.getHeight()));
+      if (StringUtils.isNotEmpty(user.getStatus())) {
+        updateUser.setStatus(user.getStatus());
       }
       updateUser.setLastUpdatedOn(new Date());
       userDAO.saveUser(updateUser);
+      return updateUser;
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);
@@ -138,14 +138,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void doUpdateUserPassword(User user, String passwordString)
-      throws BusinessServiceException {
+  public void doUpdateUserPassword(Integer userId, String page, String passwordString,
+      String dbaPwd) throws BusinessServiceException {
     try {
-      byte[] salt = PasswordUtils.getNextSalt();
-      byte[] password = PasswordUtils.hash(passwordString.toCharArray(), salt);
-      User userUpdate = userDAO.getUserById(user.getId());
-      userUpdate.setPasswordSalt(salt);
-      userUpdate.setPassword(password);
+      User userUpdate = userDAO.getUserById(userId);
+      userUpdate.setPasswordString(passwordString);
+      if ("admin".equals(page)) {
+        userUpdate.setDbaPasswordString(dbaPwd);
+      }
       userDAO.saveUser(userUpdate);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
@@ -153,111 +153,13 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  @Override
-  public void doSaveAdminUser(AdminUser adminUser) throws BusinessServiceException {
-    try {
-      byte[] salt = getNextSalt();
-      adminUser.setPasswordSalt(salt);
 
-      byte[] password = hash(adminUser.getPasswordString().toCharArray(), salt);
-      adminUser.setPassword(password);
-
-      adminUser.setConfirmPasswordString(null);
-      adminUser.setPasswordString(null);
-
-      byte[] secPassword = hash(adminUser.getSecondPasswordString().toCharArray(), salt);
-      adminUser.setSecondPassword(secPassword);
-      adminUser.setSecondPasswordString(null);
-      adminUser.setConfirmSecondPasswordString(null);
-
-
-      adminUser.setIsActive(false);
-      adminUser.setIsSuperAdmin(false);
-      userDAO.saveAdminUser(adminUser);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-
-  }
 
   @Override
-  public AdminUser doGetAdminUserById(int id) throws BusinessServiceException {
-    AdminUser adminUser = null;
-    try {
-      adminUser = userDAO.getAdminUserById(id);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-    return adminUser;
-  }
-
-  @Override
-  public AdminUser doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException {
-    try {
-      AdminUser updateAdminUser = userDAO.getAdminUserById(adminUser.getId());
-      updateAdminUser.setFirstName(adminUser.getFirstName());
-      updateAdminUser.setLastName(adminUser.getLastName());
-      userDAO.saveAdminUser(updateAdminUser);
-      return updateAdminUser;
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-
-  }
-
-  @Override
-  public void doUpdateAdminUserPassword(AdminUser adminUser, String pwd, String secPwd)
-      throws BusinessServiceException {
-    try {
-      byte[] salt = getNextSalt();
-      adminUser.setPasswordSalt(salt);
-
-      byte[] password = hash(pwd.toCharArray(), salt);
-      adminUser.setPassword(password);
-
-      byte[] secPassword = hash(secPwd.toCharArray(), salt);
-      adminUser.setSecondPassword(secPassword);
-      userDAO.saveAdminUser(adminUser);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-  }
-
-  @Override
-  public AdminUser doAuthenticateAdminUser(String email, String password, String secPassword)
-      throws BusinessServiceException {
-    AdminUser adminUser = null;
-    try {
-      adminUser = userDAO.getAdminUserByEmail(email);
-      if (adminUser == null) {
-        throw new BusinessServiceException("Email id is not registered");
-      }
-      if (!isExpectedPassword(password.toCharArray(), adminUser.getPasswordSalt(),
-          adminUser.getPassword())) {
-        throw new BusinessServiceException("Invalid password");
-      }
-      if (!isExpectedPassword(secPassword.toCharArray(), adminUser.getPasswordSalt(),
-          adminUser.getSecondPassword())) {
-        throw new BusinessServiceException("Invalid second password");
-      }
-      adminUser.setLastLogin(new Date());
-      userDAO.saveAdminUser(adminUser);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-    return adminUser;
-  }
-
-  @Override
-  public List<User> doGetAllUsers() throws BusinessServiceException {
+  public List<User> doGetAllUsers(User user) throws BusinessServiceException {
     List<User> users = null;
     try {
-      users = userDAO.getAllUsers();
+      users = userDAO.getAllUsers(user);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);
@@ -278,24 +180,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<SearchItem> doGetSearchItems(String search, User user)
-      throws BusinessServiceException {
-    List<SearchItem> searchItems = null;
+  public Object[] doGetSearchItems(String search, String search2) throws BusinessServiceException {
+    Object[] searchItems = null;
     try {
-      searchItems = userDAO.getSearchItems(search);
-      if (CollectionUtils.isEmpty(searchItems)) {
-        List<ContactUsInfo> contactUsInfos = userDAO.getAllContactUsInfo();
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("foodanalysis");
-        email.setTo(
-            contactUsInfos.stream().map(ContactUsInfo::getEmail).toArray(s -> new String[s]));
-        email.setSubject("Search not found");
-        email.setText("The user " + user.getFirstName() + " " + user.getLastName() + "("
-            + user.getEmail() + ") searched the '" + search + "'.");
-
-        // sends the e-mail
-        mailSender.send(email);
-      }
+      searchItems = userDAO.getSearchItems(search, search2);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);
@@ -303,56 +191,14 @@ public class UserServiceImpl implements UserService {
     return searchItems;
   }
 
-  @Override
-  public void doChangePassword(String email) throws BusinessServiceException {
-    try {
-      User userUpdate = userDAO.getUserByEmail(email);
-      if (userUpdate == null) {
-        throw new BusinessServiceException("Email not registered.");
-      }
-      String passwordString = PasswordUtils.generateRandomPassword(6);
-      byte[] salt = getNextSalt();
-      byte[] password = hash(passwordString.toCharArray(), salt);
-      userUpdate.setPasswordSalt(salt);
-      userUpdate.setPassword(password);
-      userDAO.saveUser(userUpdate);
-      SimpleMailMessage msg = new SimpleMailMessage();
-      msg.setFrom("foodanalysis");
-      msg.setTo(email);
-      msg.setSubject("New Password for food analysis");
-      msg.setText("Your new Password " + passwordString);
-      mailSender.send(msg);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-  }
+
 
   @Override
-  public List<AdminUser> doGetAllAdminUsers(AdminUser adminUser) throws BusinessServiceException {
-    List<AdminUser> adminUsers = null;
+  public void doChangeAdminUserStatus(int userId, String sts) throws BusinessServiceException {
     try {
-      adminUsers = userDAO.getAllAdminUsers(adminUser);
-    } catch (DataServiceException e) {
-      logger.error(e.getMessage(), e);
-      throw new BusinessServiceException(e.getLocalizedMessage(), e);
-    }
-    return adminUsers;
-  }
-
-  @Override
-  public void doChangeAdminUserStatus(int userId, Boolean sts) throws BusinessServiceException {
-    try {
-      AdminUser adminUser = userDAO.getAdminUserById(userId);
-      adminUser.setIsActive(sts);
-      userDAO.saveAdminUser(adminUser);
-
-      SimpleMailMessage msg = new SimpleMailMessage();
-      msg.setFrom("foodanalysis");
-      msg.setTo(adminUser.getEmail());
-      msg.setSubject(sts ? "Account is activated." : "Account is deactivated.");
-      msg.setText("Your food analysis account is " + (sts ? "Activated" : "Deactivated"));
-      mailSender.send(msg);
+      User user = userDAO.getUserById(userId);
+      user.setStatus(sts);
+      userDAO.saveUser(user);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);

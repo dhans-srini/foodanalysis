@@ -1,5 +1,6 @@
 package com.foodanalysis.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +30,12 @@ public class SearchItem {
   private String benefits;
 
   private String disadvantages;
+
+  @Column(name = "bmi_start")
+  private Integer bmiStart;
+
+  @Column(name = "bmi_end")
+  private Integer bmiEnd;
 
   public Integer getId() {
     return id;
@@ -109,6 +116,23 @@ public class SearchItem {
   public void setDisadvantages(String disadvantages) {
     this.disadvantages = disadvantages;
   }
+
+  public Integer getBmiStart() {
+    return bmiStart;
+  }
+
+  public void setBmiStart(Integer bmiStart) {
+    this.bmiStart = bmiStart;
+  }
+
+  public Integer getBmiEnd() {
+    return bmiEnd;
+  }
+
+  public void setBmiEnd(Integer bmiEnd) {
+    this.bmiEnd = bmiEnd;
+  }
+
 
 
 }

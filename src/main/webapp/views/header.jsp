@@ -40,10 +40,9 @@ ul.topnav li.right {
 	font-style: italic;
 }
 
-.req_start:after   {
+.req_start {
 	color: red;
 	content: "*";
-	position: absolute;
 }
 
 @media screen and (max-width: 600px) {
@@ -54,6 +53,28 @@ ul.topnav li.right {
 
 .header {
 	top: 10px;
+}
+
+.cen {
+	margin: auto;
+	width: 50%;
+	padding: 10px;
+}
+
+.flt_rght {
+	float: right;
+}
+
+.inp {
+	margin: 0 0 10px 9px;
+}
+
+.mar-lft-125 {
+	margin-left: 125px;
+}
+
+.sub-btn {
+	margin: 10 10px 0 100;
 }
 </style>
 <link rel="stylesheet"
@@ -77,17 +98,12 @@ ul.topnav li.right {
 				<a class="navbar-brand"
 					href="${pageContext.request.contextPath}/views/userDashboard.jsp">Dashboard</a>
 			</c:if>
-			<c:if test="${sessionScope.adminUser ne null}">
-				<a class="navbar-brand"
-					href="${pageContext.request.contextPath}/views/adminUserDashboard.jsp">Dashboard</a>
-			</c:if>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
-			<c:if
-				test="${sessionScope.adminUser eq null and sessionScope.user eq null}">
+			<c:if test="${sessionScope.user eq null}">
 				<ul class="nav navbar-nav">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -97,7 +113,7 @@ ul.topnav li.right {
 								href="${pageContext.request.contextPath}/userloginview">User
 									Login</a></li>
 							<li><a
-								href="${pageContext.request.contextPath}/adminUserLoginView">Admin
+								href="${pageContext.request.contextPath}/userloginview?page=admin">Admin
 									Login</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -108,14 +124,35 @@ ul.topnav li.right {
 								href="${pageContext.request.contextPath}/usrregistration">User
 									Register</a></li>
 							<li><a
-								href="${pageContext.request.contextPath}/adminUserRegistration">Admin
+								href="${pageContext.request.contextPath}/usrregistration?page=admin">Admin
 									Register</a></li>
 						</ul></li>
 				</ul>
 			</c:if>
 			<ul class="nav navbar-nav navbar-right">
-				<c:if
-					test="${sessionScope.adminUser ne null or sessionScope.user ne null}">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">Reports <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<c:if test="${sessionScope.user.role eq 'admin'}">
+							<li><a href="${pageContext.request.contextPath}/viewUsers">Update
+									DB</a></li>
+						</c:if>
+						<c:if test="${sessionScope.user.role eq 'user'}">
+							<li><a
+								href="${pageContext.request.contextPath}/userprofile/${sessionScope.user.id}">My
+									Profile</a></li>
+						</c:if>
+						<c:if test="${sessionScope.user eq null}">
+							<li><a
+								href="${pageContext.request.contextPath}/userloginview?page=admin&req_log=y">Update
+									DB</a></li>
+							<li><a
+								href="${pageContext.request.contextPath}/userloginview?req_log=y">My
+									Profile</a></li>
+						</c:if>
+					</ul></li>
+				<c:if test="${sessionScope.user ne null}">
 					<li><a href="${pageContext.request.contextPath}/logout">logout</a></li>
 				</c:if>
 				<li><a

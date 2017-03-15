@@ -35,22 +35,17 @@
 
 <!-- <img class="img1" src="img/closed_door.jpg" alt="">  -->
 
-<h2>Welcome ${sessionScope.user.firstName}
-	${sessionScope.user.lastName}</h2>
+<h2>Welcome ${sessionScope.user.name}</h2>
 <br />
-<br />
-${param.msg eq 'success'?'Account created successfully':''} ${param.msg eq 'pwd_suc'?'Password changed successfully':''}
 <c:if test="${not empty info}">
 	<span class="alert alert-success">${info}</span>
 </c:if>
+<c:if test="${param.suc eq 'usr_upd_suc'}">
+	<span class="alert alert-success">User updated successfully</span>
+</c:if>
 <br />
 <br />
-<a
-	href="${pageContext.request.contextPath}/userprofile/${sessionScope.user.id}"
-	class="btn btn-info" role="button">Update Profile</a>
-<a
-	href="${pageContext.request.contextPath}/views/userChangePassword.jsp"
-	class="btn btn-info" role="button">Change Password</a>
-
-<a href="${pageContext.request.contextPath}/views/searchItems.jsp"
-	class="btn btn-info" role="button">Search Items</a>
+<c:if test="${sessionScope.user.role eq 'user'}">
+	<a href="${pageContext.request.contextPath}/views/searchItems.jsp">Search
+		Items</a>
+</c:if>

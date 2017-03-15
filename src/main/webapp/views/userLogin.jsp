@@ -1,49 +1,52 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!-- Header Jsp  -->
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ include file="header.jsp"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>${param.page eq 'admin'?'Admin ':'User '}login</title>
+</head>
+<body>
+	<!-- Header Jsp  -->
+	<%@ include file="header.jsp"%>
+	<div style="width: 80%; height: 80%; margin: 0 auto;">
+		<section>
+			${param.req_log eq 'y'?'You need to login to access the page':''}
+			<h2 class="cen">${param.page eq 'admin'?'Admin ':'User '}login</h2>
+			<c:if test="${not empty error}">
+				<span class="error">Error: ${error}</span>
+			</c:if>
+			<form method="post" class="cen"
+				action="${pageContext.request.contextPath}/doLogin">
+				<table>
+					<tr>
+						<td class="flt_rght">Email :</td>
+						<td><input type="email" id="email" name="email" required
+							placeholder="Enter email" class="inp"></td>
+					</tr>
+					<tr>
+						<td class="flt_rght">Password :</td>
+						<td><input type="password" id="password" name="password"
+							placeholder="Enter password" class="inp"></td>
+					</tr>
+					<c:if test="${page eq 'admin'}">
+						<input hidden="true" id="page" name="page" value="${param.page}"></input>
+						<tr>
+							<td class="flt_rght">DBA Password :</td>
+							<td><input type="password" name="dbapassword"
+								placeholder="Enter DBA password" class="inp"></td>
+						</tr>
+					</c:if>
+				</table>
+				<a class="mar-lft-125"
+					href="${pageContext.request.contextPath}/views/userForgotPwd.jsp?page=${page}">Forgot
+					Password?</a> <br /> <input type="submit" name="loginBtn"
+					value="Submit" class="sub-btn" /> <a
+					href="${pageContext.request.contextPath}" role="button">Back</a>
+			</form>
 
-<h1 style="">User login</h1>
-<br />
-<div class="col-sm-12">
-	<c:if test="${not empty error}">
-		<span class="error">Error: ${error}</span>
-	</c:if>
-</div>
 
-<div class="col-sm-5">
-	<form class="form-horizontal" method="post"
-		action="${pageContext.request.contextPath}/doLogin">
-		<div class="form-group">
-			<label class="control-label col-sm-3 req_start" for="email">Email</label>:
-			<div class="col-sm-9">
-				<input type="email" class="form-control" id="email" name="email"
-					required placeholder="Enter email">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-3 req_start" for="pwd">Password
-			</label>:
-			<div class="col-sm-9">
-				<input type="password" class="form-control" id="password"
-					name="password" placeholder="Enter password">
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<a href="${pageContext.request.contextPath}/views/userForgotPwd.jsp">Forgot
-					Password?</a>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<input type="submit" name="loginBtn" value="Submit"
-					class="btn btn-info" /> <a
-					href="${pageContext.request.contextPath}" class="btn btn-info"
-					role="button">Back</a>
-			</div>
-		</div>
-	</form>
-</div>
+		</section>
+	</div>
+	<!-- footer Jsp -->
+	<%@ include file="footer.jsp"%>
+</body>
+</html>

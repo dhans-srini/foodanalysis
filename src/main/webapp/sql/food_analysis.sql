@@ -18,38 +18,6 @@ USE `food_analysis`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `admin_users`
---
-
-DROP TABLE IF EXISTS `admin_users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `admin_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) DEFAULT NULL,
-  `first_name` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(4) DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
-  `password` tinyblob,
-  `password_salt` tinyblob,
-  `second_password` tinyblob,
-  `is_super_admin` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admin_users`
---
-
-LOCK TABLES `admin_users` WRITE;
-/*!40000 ALTER TABLE `admin_users` DISABLE KEYS */;
-INSERT INTO `admin_users` VALUES (31,'d@yopmail.com','abc',1,'2017-03-09 18:08:45','aa','\«\‹{b\Ÿ@œ¢\Ê\Ï≤†⁄â\‰˜9ßôSµ\Ó\‰ëıjûÀá','û\ÎTW°˙\ÁÛQ&\\\¬','\«\‹{b\Ÿ@œ¢\Ê\Ï≤†⁄â\‰˜9ßôSµ\Ó\‰ëıjûÀá',1),(32,'dd@yopmail.com','dd',0,NULL,'dd','ˆ˘4\Í\œm\« √à\÷H\Ì|â˛∏\À%\Î∞ñÇû%','π6]\‰\Ó§-UVé\Ó\”dG','ˆ˘4\Í\œm\« √à\÷H\Ì|â˛∏\À%\Î∞ñÇû%',NULL),(33,'ad@yopmail.com','ad',1,NULL,'ad','\ƒ8iØ†Ë¶º29\Îæ\\WaF\ÈIw∂’∫\»\Êm','\›B§´©é˜És7R™›Æ&','\ƒ8iØ†Ë¶º29\Îæ\\WaF\ÈIw∂’∫\»\Êm',NULL),(34,'acea@yopmail.com','aca',0,'2017-03-09 17:46:50','acea','0\\\\?t\ÿY˚î\Ï\ƒt»ïé7ÒG>\'ö\À\ÓˆqúL ','%ëÛ\Õ6seÚàY\n-ç+','0\\\\?t\ÿY˚î\Ï\ƒt»ïé7ÒG>\'ö\À\ÓˆqúL ',0);
-/*!40000 ALTER TABLE `admin_users` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `food_items`
 --
 
@@ -67,6 +35,8 @@ CREATE TABLE `food_items` (
   `calorie` varchar(45) DEFAULT NULL,
   `benefits` varchar(250) DEFAULT NULL,
   `disadvantages` varchar(150) DEFAULT NULL,
+  `bmi_start` int(11) DEFAULT NULL,
+  `bmi_end` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Name_UNIQUE` (`name`),
   KEY `User_id` (`id`)
@@ -79,7 +49,7 @@ CREATE TABLE `food_items` (
 
 LOCK TABLES `food_items` WRITE;
 /*!40000 ALTER TABLE `food_items` DISABLE KEYS */;
-INSERT INTO `food_items` VALUES (1,'Apple','0.2g','0.3g','14g','1%','10g','52','Apples are extremely rich in important antioxidants, flavanoids, and dietary fiber. ','High in Sugar, so Sugar patients avoid Apples'),(2,'Banana','0.3g','1.1g','23g','10%','12g','89','High in Fiber, viitamins and calcium and carbohydrates, considered as rich source of Energy','Bananas contain sugar  not recommended for diabetics or the sugar-addicted'),(3,'orance','0.3g','1.1g','23g','10%','12g','89','High in Fiber, viitamins and calcium and carbohydrates, considered as rich source of Energy','Bananas contain sugar  not recommended for diabetics or the sugar-addicted');
+INSERT INTO `food_items` VALUES (1,'Apple','0.2g','0.3g','14g','1%','10g','52','Apples are extremely rich in important antioxidants, flavanoids, and dietary fiber. ','High in Sugar, so Sugar patients avoid Apples',10,20),(2,'Banana','0.3g','1.1g','23g','10%','12g','89','High in Fiber, viitamins and calcium and carbohydrates, considered as rich source of Energy','Bananas contain sugar  not recommended for diabetics or the sugar-addicted',1,10),(3,'orance','0.3g','1.1g','23g','10%','12g','89','High in Fiber, viitamins and calcium and carbohydrates, considered as rich source of Energy','Bananas contain sugar  not recommended for diabetics or the sugar-addicted',20,30);
 /*!40000 ALTER TABLE `food_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,25 +88,27 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(200) NOT NULL,
-  `last_name` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `email` varchar(200) NOT NULL,
-  `password_salt` blob NOT NULL,
-  `password` blob,
   `age` varchar(55) DEFAULT NULL,
   `gender` varchar(10) DEFAULT NULL,
   `weight` smallint(6) DEFAULT NULL,
-  `height_feet` smallint(6) DEFAULT NULL,
-  `height_inch` smallint(6) DEFAULT NULL,
+  `height` smallint(6) DEFAULT NULL,
   `alergies` varchar(400) DEFAULT NULL,
   `health_issues` varchar(400) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
-  `is_active` tinyint(4) NOT NULL,
+  `status` varchar(15) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   `last_updated_on` datetime DEFAULT NULL,
+  `fav_friend` varchar(255) DEFAULT NULL,
+  `fav_movie` varchar(255) DEFAULT NULL,
+  `bmi` float(100,3) DEFAULT NULL,
+  `role` varchar(45) DEFAULT NULL,
+  `dba_password` varchar(200) DEFAULT NULL,
+  `password` varchar(205) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,7 +117,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (11,'aac','b','b@yopmail.com','E\Ÿ#\"\‘^ı+eU3z°êt8','ìxj8\“\‚é‘ñÇírBñı\—x;\”\ÈEG4œ¢c\\\›','Between 18 to 30','MALE',NULL,NULL,NULL,'','','1111111111',1,'2017-03-07 16:44:26','2017-03-09 15:20:11'),(12,'bb','bb','bb@yopmail.com','\Ÿ\È™B∞ˆ1£4©HÙ£s\‚','îê\'fbjõ§¡∫\‰Nxú<9@\0¨[¸LÙ}','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,'2017-03-09 15:22:53'),(14,'bb','bb','bbc@yopmail.com','\ﬁ\◊˜\œ\–if˜@ı\‡9:7\"','\\é¥Êºâ\–\€·¶¨ítì@´!e+Ûy\Ê|˜\‡∂','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,'2017-03-09 15:23:31'),(15,'bb','bb','bbcc@yopmail.com','&Uá~ö\÷\Œ~>øs\€%\’4','\Óˇß¿M†\'9\›˛|e˝0/˚ØyÖn®/rU\Î´˙^8','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,'2017-03-09 15:23:37'),(16,'a','a','a@yopmail1.com','ªßàºı7˝íù&d1Y/òg','0©¯h%è\ ‰åÇÑúrò\‚0\–O˜≤º±\»I¿•ò','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(17,'b','b','bb1@g.com','´\”#Òˇ(ÚΩ°úe5\¬','ﬁ™h˚Qòpı\◊r\Á\ﬁ\ÂuÖú\◊gUg\«Î≥ìE\Ë€®','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(18,'c','c','c@yopmail.com','Z*KÒ\œû	Ç\È}','\·∂a)ØKR¯ö\≈Q¶oÖ¯;Ä˛\€.π[\√Ä','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(19,'c','c','ca@yopmail.com','\Ët_\‰ê\¬%´_õÜW\Áµ','rw\ÍÛAê\Ój™\‹\◊&\…GœÑˆ\ZúG0\Î,õ`V','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(20,'a','a','aa@yopmail.com','<\»\È\È\\\"X?\0•Ùπæ\„a_','1ÄÉ˜kñ§Ú∑e$zæ\Á\‘{o8\Ê\ÔFnÚD¶yﬂç¸¶','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(21,'a','a','aaa@yopmail.com','\Z4fÛ}\‘O!å:µé≥{O','=√Å[ı?Ò\≈kAúx…´\Ó5ñj.d%ô>ø\Áká','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(24,'a','a','aaaaa@yopmail.com','Ö\“\Ó\ ¡\Í|πãS\„\ﬁ\√˛º','ïã\‡\ÿ\”n≥\œ\ƒ¡ëÆ\ÏÛ\ÿ`\n\‰O∂rê\∆NÚ©Ç\n','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(25,'a','a','aa1@yopmail.com','ôøÙ\⁄\\d3-«ëb\Àot\÷','\Îp\Èˇh,ïèÙ\ÃcÙ8æT€Ä˙\‘¿\ﬁ7\Ïˇ%™JP:','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(26,'a','a','aa21@yopmail.com','Nı\‡mCÒªâMï4¥¡j','≤WYõˆåi\Ó~˙î£/Q®yq∞\ﬂ\ÓüÒƒ©\›#8ï','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(27,'a','a','aac@g.com','_nû®•kÜ«áK¿˚','\–\ÁvOs§î;˘òõ˚_†®\∆f\Èíe0\«(+êx&\n2','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(28,'abc','abc','aaccc@g.com','2\ﬂJ\Î¢]eAå¸ñDÆh','húr\Â;‘¢\Ê;\Œ≠ì#\ŒX°;é_º(+qõ∑8˚\Z\È','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(29,'a','a','1@yopmail.com','rG\Ó\ÃHÙ∂	ïx˝ˇ\Ì','µcÅÄ€Ü\œ\…\√\Ë\Z>x$\ÿ\Íº0Ù%\ËÖ\Â\Ê\ÈÕÇ\’\r\¬\◊','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(30,'v','v','v@yopmail.com','\Í\”`Ç˜q&&\n\ÿ¶&ç','o•\„ì(\·ímLÖ=/E\€nípj\\1ı◊éy™µê°&,..','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,'2017-03-07 17:06:21',NULL),(34,'dd','a','d@yopmail.com','\n`cä∫\⁄\ÕN•[o¡7P≥','l\Í%Ö\‡HfnX\ŸPëÉDß≠∏∞\Â\ÎY\”Jæb Ekm\√','Between 18 to 30','NONE',NULL,NULL,NULL,'a','a','',1,'2017-03-08 19:06:50',NULL),(36,'a','a','cac@yopmail.com','\∆˛\nñF\‹\ w\0\Ìkë+0\0','´#bT\√\„Å\«f¯Û2ÀÉ¿\÷yÑúªºf6ÄT:\Ái\‹\0','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(38,'a','a','cacd@yopmail.com','è\‰^	≠\náºë0\Ê\Ï\\\Îx','.>$ºïQΩƒåe¿thﬁúM¨Ú«Ñ}(\Ë\“w≥\Ê\È>','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,NULL,NULL),(39,'ac','aaa','axc@yopmail.com','ÿ°\Ã\·\÷˘`ú¨\Àvt\‘','Ωg˘_kiìß`øCWI’åQ\’DWô˜\ÁHªoê£∑v\Á\Î','Between 18 to 30','NONE',NULL,NULL,NULL,'','','',1,'2017-03-09 17:43:56','2017-03-09 17:44:05');
+INSERT INTO `users` VALUES (11,'un del','b@yopmail.com','Between 18 to 30','MALE',NULL,NULL,'','','1111111111','c','2017-03-07 16:44:26','2017-03-15 12:10:49','aa','aa',NULL,NULL,NULL,NULL),(12,'bb','bb@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','d',NULL,'2017-03-15 11:29:34','aa','aa',NULL,NULL,NULL,NULL),(14,'bb','bbc@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','d',NULL,'2017-03-14 19:02:00','','',NULL,NULL,NULL,NULL),(15,'bb','bbcc@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','d',NULL,'2017-03-14 19:02:18','','',NULL,NULL,NULL,NULL),(16,'a','a@yopmail1.com','Between 18 to 30','NONE',NULL,NULL,'','','','c',NULL,'2017-03-14 19:02:32','','',NULL,NULL,NULL,NULL),(17,'b','bb1@g.com','Between 18 to 30','NONE',NULL,NULL,'','','','c',NULL,'2017-03-14 19:08:21','','',NULL,NULL,NULL,NULL),(18,'c','c@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','c',NULL,'2017-03-14 17:26:42','','',NULL,NULL,NULL,NULL),(19,'c','ca@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(20,'a','aa@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(21,'a','aaa@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(24,'a','aaaaa@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(25,'a','aa1@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(26,'a','aa21@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(27,'a','aac@g.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(28,'abc','aaccc@g.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(29,'a','1@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(30,'v','v@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1','2017-03-07 17:06:21',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(34,'dd','d@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'a','a','','1','2017-03-08 19:06:50',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(36,'a','cac@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(38,'a','cacd@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(39,'ac','axc@yopmail.com','Between 18 to 30','NONE',NULL,NULL,'','','','1','2017-03-09 17:43:56','2017-03-09 17:44:05',NULL,NULL,NULL,NULL,NULL,NULL),(40,'t1update1','t1@yopmail.com','Between 18 to 30','MALE',50,163,'3',NULL,'3333333333','1','2017-03-15 12:11:09','2017-03-15 12:11:14','aaa','aaa',18.820,'user','aaaaa','aaaaa'),(41,'adc','t2@yopmail.com','Between 18 to 30','MALE',NULL,NULL,'',NULL,'',NULL,'2017-03-15 12:02:33','2017-03-14 15:54:59','a','a',NULL,'admin','aaaaa','aaaaa'),(42,'ut1','ut1@yopmail.com','Between 18 to 30','MALE',NULL,NULL,'',NULL,'',NULL,NULL,NULL,'a','a',NULL,'user',NULL,'aaaaa'),(43,'ut2','ut2@yopmail.com','Between 18 to 30','MALE',NULL,NULL,'',NULL,'',NULL,NULL,NULL,'a','a',NULL,'admin','aaaaa','aaaaa');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -158,4 +130,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-09 18:15:56
+-- Dump completed on 2017-03-15 12:18:04

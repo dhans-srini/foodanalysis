@@ -21,8 +21,7 @@ public class UserValidator implements Validator {
 
   @Override
   public void validate(Object target, Errors errors) {
-    rejectIfEmptyOrWhitespace(errors, "firstName", "err_first_name", "First Name is Required");
-    rejectIfEmptyOrWhitespace(errors, "lastName", "err_last_name", "Last Name is Required");
+    rejectIfEmptyOrWhitespace(errors, "name", "err_first_name", "Name is Required");
     rejectIfEmptyOrWhitespace(errors, "email", "err_email", "Email is required");
     rejectIfEmptyOrWhitespace(errors, "passwordString", "err_pass_req", "Password is required");
     rejectIfEmptyOrWhitespace(errors, "confirmPasswordString", "err_conf_pass_req",
@@ -33,19 +32,6 @@ public class UserValidator implements Validator {
     }
     if (!EmailValidator.getInstance().isValid(user.getEmail())) {
       errors.rejectValue("email", "err_email_invalid", "Invalid email");
-    }
-    if (isNotEmpty(user.getWeightString()) && !isValidNumber(user.getWeightString().toString())) {
-      errors.rejectValue("weightString", "err_weightString", "Invalid weight");
-    }
-
-    if (isNotEmpty(user.getHeightInFeetsString())
-        && !isValidNumber(user.getHeightInFeetsString().toString())) {
-      errors.rejectValue("HeightInFeetsString", "err_height", "Invalid Height");
-    }
-
-    if (isNotEmpty(user.getHeightInFeetsString())
-        && !isValidNumber(user.getHeightInFeetsString().toString())) {
-      errors.rejectValue("HeightWithRemainingInchString", "err_weightRemString", "Invalid   feets");
     }
     if (isNotEmpty(user.getPhone())
         && (!isValidNumber(user.getPhone()) || user.getPhone().length() != 10)) {

@@ -3,46 +3,34 @@ package com.foodanalysis.biz;
 import java.util.List;
 
 import com.foodanalysis.biz.exception.BusinessServiceException;
-import com.foodanalysis.model.AdminUser;
 import com.foodanalysis.model.ContactUsInfo;
-import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 public interface UserService {
 
-  void doSaveUser(User user) throws BusinessServiceException;
+  void doSaveUser(User user, String role) throws BusinessServiceException;
 
-  User doAuthenticateUser(String email, String password) throws BusinessServiceException;
+  User doAuthenticateUser(String email, String password, String dbapassword, String page)
+      throws BusinessServiceException;
 
   User doGetUserById(int id) throws BusinessServiceException;
 
-  void doUpdateUser(User user) throws BusinessServiceException;
+  User doGetUserByEmail(String email) throws BusinessServiceException;
 
-  void doUpdateUserPassword(User user, String password) throws BusinessServiceException;
+  User doUpdateUser(User user) throws BusinessServiceException;
 
-  void doSaveAdminUser(AdminUser adminUser) throws BusinessServiceException;
-
-  AdminUser doGetAdminUserById(int id) throws BusinessServiceException;
-
-  AdminUser doUpdateAdminUser(AdminUser adminUser) throws BusinessServiceException;
-
-  void doUpdateAdminUserPassword(AdminUser adminUser, String password, String secPassword)
+  void doUpdateUserPassword(Integer userId, String page, String password, String DBAPwd)
       throws BusinessServiceException;
 
-  AdminUser doAuthenticateAdminUser(String email, String password, String secPassword)
-      throws BusinessServiceException;
-
-  List<User> doGetAllUsers() throws BusinessServiceException;
+  List<User> doGetAllUsers(User user) throws BusinessServiceException;
 
   List<ContactUsInfo> doGetAllContactUsInfo() throws BusinessServiceException;
 
-  List<SearchItem> doGetSearchItems(String search, User user) throws BusinessServiceException;
+  Object[] doGetSearchItems(String search, String search2) throws BusinessServiceException;
 
-  void doChangePassword(String email) throws BusinessServiceException;
 
-  List<AdminUser> doGetAllAdminUsers(AdminUser adminUser) throws BusinessServiceException;
 
-  void doChangeAdminUserStatus(int userId, Boolean sts) throws BusinessServiceException;
+  void doChangeAdminUserStatus(int userId, String sts) throws BusinessServiceException;
 
 
 

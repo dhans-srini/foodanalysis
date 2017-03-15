@@ -15,22 +15,17 @@
 </div>
 
 <div class="col-sm-5">
-	<form class="form-horizontal" method="post"
+	<form method="post"
 		action="${pageContext.request.contextPath}/forgotpwd">
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="email">Email:</label>
-			<div class="col-sm-10">
-				<input type="email" class="form-control" id="email" name="email"
-					required placeholder="Enter email">
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<input type="submit" name="loginBtn" value="Submit"
-					class="btn btn-info" /> <a
-					href="${pageContext.request.contextPath}/views/userLogin.jsp"
-					class="btn btn-info" role="button">Back</a>
-			</div>
-		</div>
+		<input hidden="true" id="page" name="page" value="${param.page}"></input>
+		<label for="email">Email:</label> <input type="email" id="email"
+			name="email" required placeholder="Enter email"> <br /> <label
+			for="favFriendName">Favourite friend name? </label> <input
+			name="favFriendName" placeholder="Enter friend name" /><br /> <label
+			for="favMovieName">Favourite movie name? </label> <input
+			name="favMovieName" placeholder="Enter movie name" /> <br /> <input
+			type="submit" name="loginBtn" value="Submit" /> <a
+			href="${pageContext.request.contextPath}/views/userLogin.jsp">Back</a>
+
 	</form>
 </div>

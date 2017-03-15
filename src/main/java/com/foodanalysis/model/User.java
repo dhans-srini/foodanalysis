@@ -17,20 +17,14 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "first_name")
-  private String firstName;
+  @Column(name = "name")
+  private String name;
 
-  @Column(name = "last_name")
-  private String lastName;
 
   @Column(name = "email")
   private String email;
 
-  @Column(name = "password_salt")
-  private byte[] passwordSalt;
 
-  @Column(name = "password")
-  private byte[] password;
 
   @Column(name = "last_login")
   private Date lastLogin;
@@ -38,11 +32,17 @@ public class User {
   @Column(name = "last_updated_on")
   private Date lastUpdatedOn;
 
-  @Transient
+  @Column(name = "password")
   private String passwordString;
 
   @Transient
   private String confirmPasswordString;
+
+  @Column(name = "dba_password")
+  private String dbaPasswordString;
+
+  @Transient
+  private String confirmDbaPasswordString;
 
 
   private String age;
@@ -51,30 +51,23 @@ public class User {
 
   private Integer weight;
 
-  @Column(name = "height_feet")
-  private Integer HeightInFeets;
-
-  @Column(name = "height_inch")
-  private Integer HeightWithRemainingInch;
-
-  @Transient
-  private String weightString;
-
-  @Transient
-  private String HeightInFeetsString;
-
-  @Transient
-  private String HeightWithRemainingInchString;
+  private Integer height;
 
   private String alergies;
 
-  @Column(name = "health_issues")
-  private String healthIssues;
-
   private String phone;
 
-  @Column(name = "is_active")
-  private Boolean isActive;
+  @Column(name = "fav_friend")
+  private String favFriendName;
+
+  @Column(name = "fav_movie")
+  private String favMovieName;
+
+  private String status;
+
+  private Float bmi;
+
+  private String role;
 
   public Integer getId() {
     return id;
@@ -84,20 +77,12 @@ public class User {
     this.id = id;
   }
 
-  public String getFirstName() {
-    return firstName;
+  public String getName() {
+    return name;
   }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getEmail() {
@@ -108,6 +93,8 @@ public class User {
     this.email = email;
   }
 
+
+
   public Date getLastLogin() {
     return lastLogin;
   }
@@ -116,20 +103,12 @@ public class User {
     this.lastLogin = lastLogin;
   }
 
-  public byte[] getPasswordSalt() {
-    return passwordSalt;
+  public Date getLastUpdatedOn() {
+    return lastUpdatedOn;
   }
 
-  public void setPasswordSalt(byte[] passwordSalt) {
-    this.passwordSalt = passwordSalt;
-  }
-
-  public byte[] getPassword() {
-    return password;
-  }
-
-  public void setPassword(byte[] password) {
-    this.password = password;
+  public void setLastUpdatedOn(Date lastUpdatedOn) {
+    this.lastUpdatedOn = lastUpdatedOn;
   }
 
   public String getPasswordString() {
@@ -172,44 +151,12 @@ public class User {
     this.weight = weight;
   }
 
-  public Integer getHeightInFeets() {
-    return HeightInFeets;
+  public Integer getHeight() {
+    return height;
   }
 
-  public void setHeightInFeets(Integer heightInFeets) {
-    HeightInFeets = heightInFeets;
-  }
-
-  public Integer getHeightWithRemainingInch() {
-    return HeightWithRemainingInch;
-  }
-
-  public void setHeightWithRemainingInch(Integer heightWithRemainingInch) {
-    HeightWithRemainingInch = heightWithRemainingInch;
-  }
-
-  public String getWeightString() {
-    return weightString;
-  }
-
-  public void setWeightString(String weightString) {
-    this.weightString = weightString;
-  }
-
-  public String getHeightInFeetsString() {
-    return HeightInFeetsString;
-  }
-
-  public void setHeightInFeetsString(String heightInFeetsString) {
-    HeightInFeetsString = heightInFeetsString;
-  }
-
-  public String getHeightWithRemainingInchString() {
-    return HeightWithRemainingInchString;
-  }
-
-  public void setHeightWithRemainingInchString(String heightWithRemainingInchString) {
-    HeightWithRemainingInchString = heightWithRemainingInchString;
+  public void setHeight(Integer height) {
+    this.height = height;
   }
 
   public String getAlergies() {
@@ -220,14 +167,6 @@ public class User {
     this.alergies = alergies;
   }
 
-  public String getHealthIssues() {
-    return healthIssues;
-  }
-
-  public void setHealthIssues(String healthIssues) {
-    this.healthIssues = healthIssues;
-  }
-
   public String getPhone() {
     return phone;
   }
@@ -236,19 +175,60 @@ public class User {
     this.phone = phone;
   }
 
-  public Boolean getIsActive() {
-    return isActive;
+  public String getFavFriendName() {
+    return favFriendName;
   }
 
-  public void setIsActive(Boolean isActive) {
-    this.isActive = isActive;
+  public void setFavFriendName(String favFriendName) {
+    this.favFriendName = favFriendName;
   }
 
-  public Date getLastUpdatedOn() {
-    return lastUpdatedOn;
+  public String getFavMovieName() {
+    return favMovieName;
   }
 
-  public void setLastUpdatedOn(Date lastUpdatedOn) {
-    this.lastUpdatedOn = lastUpdatedOn;
+  public void setFavMovieName(String favMovieName) {
+    this.favMovieName = favMovieName;
   }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public Float getBmi() {
+    return bmi;
+  }
+
+  public void setBmi(Float bmi) {
+    this.bmi = bmi;
+  }
+
+  public String getDbaPasswordString() {
+    return dbaPasswordString;
+  }
+
+  public void setDbaPasswordString(String dbaPasswordString) {
+    this.dbaPasswordString = dbaPasswordString;
+  }
+
+  public String getConfirmDbaPasswordString() {
+    return confirmDbaPasswordString;
+  }
+
+  public void setConfirmDbaPasswordString(String confirmDbaPasswordString) {
+    this.confirmDbaPasswordString = confirmDbaPasswordString;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
 }

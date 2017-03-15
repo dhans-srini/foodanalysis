@@ -1,5 +1,7 @@
 package com.foodanalysis.data.impl;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,6 @@ import com.foodanalysis.data.access.DataModifier;
 import com.foodanalysis.data.access.DataRetriver;
 import com.foodanalysis.data.access.exception.DuplicateRecordException;
 import com.foodanalysis.data.exception.DataServiceException;
-import com.foodanalysis.model.AdminUser;
 import com.foodanalysis.model.ContactUsInfo;
 import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
@@ -79,46 +80,13 @@ public class UserDAOImpl implements UserDAO {
   }
 
 
-  @Override
-  public void saveAdminUser(AdminUser adminUser) throws DataServiceException {
-    try {
-      dataModifier.insert(adminUser);
-    } catch (DuplicateRecordException de) {
-      throw new DataServiceException("Email already exist.", de);
-    } catch (Exception e) {
-      throw new DataServiceException(e.getMessage(), e);
-    }
-  }
-
 
   @Override
-  public AdminUser getAdminUserById(int id) throws DataServiceException {
+  public List<User> getAllUsers(User user) throws DataServiceException {
     try {
       Map<String, Object> params = new HashMap<>();
-      params.put("id", id);
-      return dataRetriver.retrieveObjectByHQL("From AdminUser u where u.id=:id", params);
-    } catch (Exception e) {
-      throw new DataServiceException(e.getMessage(), e);
-    }
-  }
-
-
-  @Override
-  public AdminUser getAdminUserByEmail(String email) throws DataServiceException {
-    try {
-      Map<String, Object> params = new HashMap<>();
-      params.put("emailId", email);
-      return dataRetriver.retrieveObjectByHQL("From AdminUser u where u.email=:emailId", params);
-    } catch (Exception e) {
-      throw new DataServiceException(e.getMessage(), e);
-    }
-  }
-
-
-  @Override
-  public List<User> getAllUsers() throws DataServiceException {
-    try {
-      return dataRetriver.retrieveByHQL("From User u");
+      params.put("userId", user.getId());
+      return dataRetriver.retrieveByHQL("From User u where u.id!=:userId", params);
     } catch (Exception e) {
       throw new DataServiceException(e.getMessage(), e);
     }
@@ -136,28 +104,26 @@ public class UserDAOImpl implements UserDAO {
 
 
   @Override
-  public List<SearchItem> getSearchItems(String search) throws DataServiceException {
+  public Object[] getSearchItems(String search, String search2) throws DataServiceException {
+    Object[] res = new Object[2];
     try {
       Map<String, Object> params = new HashMap<>();
       params.put("search", "%" + search + "%");
-      return dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ", params);
+      List<SearchItem> s1 =
+          dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ", params);
+      res[0] = s1;
+      if (isNotEmpty(search2)) {
+        params = new HashMap<>();
+        params.put("search", "%" + search2 + "%");
+        List<SearchItem> s2 =
+            dataRetriver.retrieveByHQL("From SearchItem s where s.name like :search ", params);
+        res[1] = s2;
+      }
     } catch (Exception e) {
       throw new DataServiceException(e.getMessage(), e);
     }
+    return res;
   }
-
-
-  @Override
-  public List<AdminUser> getAllAdminUsers(AdminUser adminUser) throws DataServiceException {
-    try {
-      Map<String, Object> params = new HashMap<>();
-      params.put("userId", adminUser.getId());
-      return dataRetriver.retrieveByHQL("From AdminUser u where u.id!=:userId", params);
-    } catch (Exception e) {
-      throw new DataServiceException(e.getMessage(), e);
-    }
-  }
-
 
 
 }

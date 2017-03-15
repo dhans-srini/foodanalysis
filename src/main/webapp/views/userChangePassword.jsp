@@ -42,24 +42,27 @@
 	<c:if test="${not empty error}">
 		<span class="error">Error: ${error}</span>
 	</c:if>
-	<table>
-		<tr>
-			<td><label path="passwordString"  class="req_start">password</label></td>
-			<td><input type="password" id="passwordString" placeholder="Enter password"
-				name="passwordString" required></input></td>
-		</tr>
-		<tr>
-			<td><label path="confirmPasswordString"  class="req_start">Confirm Password</label></td>
-			<td><input type="password" id="confirmPasswordString" placeholder="Enter confirm password"
-				name="confirmPasswordString" required></input></td>
-		</tr>
-		<tr>
-			<td><input type="submit" value="Submit" class="btn btn-info"/></td>
-			<td><a
-				href="${pageContext.request.contextPath}/views/userDashboard.jsp"
-				class="btn btn-info" role="button">Back</a></td>
-		</tr>
-
-	</table>
-
+	<br />
+	<input hidden="true" name="userId" value="${param.userId}"></input>
+	<label path="passwordString">password</label>
+	<input type="password" id="passwordString" placeholder="Enter password"
+		name="passwordString" required></input>
+	<br />
+	<label path="confirmPasswordString">Confirm Password</label>
+	<input type="password" id="confirmPasswordString"
+		placeholder="Enter confirm password" name="confirmPasswordString"
+		required></input>
+	<br />
+	<c:if test="${param.page eq 'admin'}">
+		<input hidden="true" name="page" value="${param.page}"></input>
+		<label>DBA password</label>
+		<input type="password" placeholder="Enter DBA password" name="dbaPwd"
+			required></input>
+		<br />
+		<label>Confirm Password</label>
+		<input type="password" placeholder="Enter confirm DBA password"
+			name="confDbaPwd" required></input>
+		<br />
+	</c:if>
+	<input type="submit" value="Submit" />
 </form:form>

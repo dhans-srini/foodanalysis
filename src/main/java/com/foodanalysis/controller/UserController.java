@@ -1,9 +1,13 @@
 package com.foodanalysis.controller;
 
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.EmailValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +55,17 @@ public class UserController {
   }
 
   @RequestMapping(value = "/usrregistration", method = RequestMethod.GET)
-  public String registration(Model model) {
+  public String registration(@RequestParam(required = false) String page, Model model) {
     model.addAttribute("user", new User());
+    model.addAttribute("page", page);
     return "userRegistration";
   }
 
   @RequestMapping(value = "/userloginview", method = RequestMethod.GET)
-  public String login() {
+  public String login(@RequestParam(required = false) String page, Model model) {
+    if ("admin".equals(page)) {
+      model.addAttribute("page", "admin");
+    }
     return "userLogin";
   }
 
@@ -67,17 +75,6 @@ public class UserController {
     User user = null;
     try {
       user = userService.doGetUserById(id);
-
-      if (user.getWeight() != null) {
-        user.setWeightString(user.getWeight().toString());
-      }
-      if (user.getHeightInFeets() != null) {
-        user.setHeightInFeetsString(user.getHeightInFeets().toString());
-      }
-      if (user.getHeightWithRemainingInch() != null) {
-        user.setHeightWithRemainingInchString(user.getHeightWithRemainingInch().toString());
-      }
-
       model.addAttribute("user", user);
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
@@ -87,13 +84,16 @@ public class UserController {
 
   @RequestMapping(value = "/doRegisterUser", method = RequestMethod.POST)
   public String saveUser(@ModelAttribute("user") User user, BindingResult bindingResult,
-      Model model, HttpSession session) {
+      @RequestParam(required = false) String page, Model model, HttpSession session) {
     try {
+      if ("admin".equals(page)) {
+        model.addAttribute("page", "admin");
+      }
       userValidator.validate(user, bindingResult);
       if (bindingResult.hasErrors()) {
         return "userRegistration";
       }
-      userService.doSaveUser(user);
+      userService.doSaveUser(user, "admin".equals(page) ? "admin" : "user");
       model.addAttribute("info", "Account created successfully. Goto login page for login...");
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
@@ -113,12 +113,16 @@ public class UserController {
       if (bindingResult.hasErrors()) {
         return "userProfile";
       }
-      userService.doUpdateUser(user);
-      if (session.getAttribute("adminUser") == null) {
+      if ("adminEdit".equals(page)) {
+        user.setStatus("c");
+      }
+      user= userService.doUpdateUser(user);
+      if (!"adminEdit".equals(page)) {
         session.setAttribute("user", user);
       }
       model.addAttribute("info", "User updated successfully");
-      return "".equals(page) ? "userDashboard" : "redirect:viewUsers?msg=user_upd_success";
+      return "".equals(page) ? "redirect:views/userDashboard.jsp?suc=usr_upd_suc"
+          : "redirect:viewUsers?msg=user_upd_success";
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -130,13 +134,17 @@ public class UserController {
   }
 
   @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
-  public String login(@RequestParam("email") String email,
-      @RequestParam("password") String password, Model model, HttpSession session) {
+  public String login(@RequestParam String email, @RequestParam String password,
+      @RequestParam(required = false) String dbapassword,
+      @RequestParam(required = false) String page, Model model, HttpSession session) {
     try {
+      if ("admin".equals(page)) {
+        model.addAttribute("page", "admin");
+      }
       if (!EmailValidator.getInstance().isValid(email)) {
         model.addAttribute("error", "Invalid email id");
       }
-      User user = userService.doAuthenticateUser(email, password);
+      User user = userService.doAuthenticateUser(email, password, dbapassword, page);
       session.setAttribute("user", user);
 
       return "redirect:views/userDashboard.jsp";
@@ -152,17 +160,21 @@ public class UserController {
 
   @RequestMapping(value = "/doChangeUserPassword", method = RequestMethod.POST)
   public String changePassword(@RequestParam("passwordString") String password,
-      @RequestParam("confirmPasswordString") String confirmPassword, Model model,
-      HttpSession session) {
+      @RequestParam("confirmPasswordString") String confirmPassword, @RequestParam Integer userId,
+      @RequestParam(required = false) String page, @RequestParam(required = false) String dbaPwd,
+      @RequestParam(required = false) String confDbaPwd, Model model, HttpSession session) {
     try {
       if (password != null && !password.equals(confirmPassword)) {
         model.addAttribute("error", "Password and Confirm Password mismatch");
       } else if (password != null && password.length() < 5) {
         model.addAttribute("error", "Password should be atleast 5 character.");
+      } else if ("admin".equals(page) && !dbaPwd.equals(confDbaPwd)) {
+        model.addAttribute("error", "DBA Password and Confirm DBA Password mismatch");
+      } else if (dbaPwd != null && dbaPwd.length() < 5) {
+        model.addAttribute("error", "DBA Password should be atleast 5 character.");
       } else {
-        User user = (User) session.getAttribute("user");
-        userService.doUpdateUserPassword(user, password);
-        return "redirect:views/userDashboard.jsp?msg=pwd_suc";
+        userService.doUpdateUserPassword(userId, page, password, dbaPwd);
+        return "redirect:views/index.jsp?msg=pwd_suc";
       }
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
@@ -175,13 +187,26 @@ public class UserController {
   }
 
   @RequestMapping(value = "/forgotpwd", method = RequestMethod.POST)
-  public String changePassword(@RequestParam String email, Model model) {
+  public String changePassword(@RequestParam String email, @RequestParam String favFriendName,
+      @RequestParam String favMovieName, Model model, @RequestParam(required = false) String page) {
     try {
-
-      userService.doChangePassword(email);
-      model.addAttribute("info", "Pasword send to that email.");
+      User user = userService.doGetUserByEmail(email);
+      if (user == null) {
+        model.addAttribute("error", "Email not registered");
+      } else if (user.getRole().equals("user") && !page.isEmpty()) {
+        model.addAttribute("error", "Invalid login");
+      } else if (user.getRole().equals("admin") && !user.getRole().equals(page)) {
+        model.addAttribute("error", "Invalid login");
+      } else if (user.getFavFriendName().equals(favFriendName)
+          && user.getFavMovieName().equals(favMovieName)) {
+        if (user.getStatus().equals("d")) {
+          throw new BusinessServiceException("Account is inactive");
+        }
+        return "redirect:views/userChangePassword.jsp?userId=" + user.getId() + "&page=" + page;
+      } else {
+        model.addAttribute("error", "Invalid answers");
+      }
       return "userForgotPwd";
-
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
       logger.error(e.getMessage(), e);
@@ -214,13 +239,33 @@ public class UserController {
     return "contact";
   }
 
+  @SuppressWarnings("unchecked")
   @RequestMapping(value = "/searchItem", method = RequestMethod.GET)
-  public String searchItem(Model model, @RequestParam String search, HttpSession session) {
-    List<SearchItem> searchItems = null;
+  public String searchItem(Model model, @RequestParam(required = false) String search,
+      @RequestParam(required = false) String ing1, @RequestParam(required = false) String ing2,
+      @RequestParam(required = false) String view, HttpSession session) {
+    List<SearchItem> search1 = null;
+    List<SearchItem> search2 = null;
     try {
-      User user = (User) session.getAttribute("user");
-      searchItems = userService.doGetSearchItems(search, user);
-      model.addAttribute("searchItems", searchItems);
+      if ("view1".equals(view)) {
+        Object[] res = userService.doGetSearchItems(ing1, ing2);
+        search1 = (List<SearchItem>) res[0];
+        search2 = (List<SearchItem>) res[1];
+        model.addAttribute("search1", search1);
+        model.addAttribute("search2", search2);
+        model.addAttribute("view", "view1");
+      } else {
+        Object[] res = userService.doGetSearchItems(search, null);
+        search1 = (List<SearchItem>) res[0];
+        model.addAttribute("search1", search1);
+      }
+      if (isEmpty(search1) && StringUtils.isEmpty(ing1)) {
+        model.addAttribute("searchInfo", "No records found...Try another search");
+        model.addAttribute("view", "view1");
+      } else if (isEmpty(search1) && isEmpty(search2) && isNotEmpty(ing1)) {
+        model.addAttribute("searchInfo", "No records found");
+        model.addAttribute("view", "view1");
+      }
     } catch (BusinessServiceException e) {
       model.addAttribute("error", e.getMessage());
     }
@@ -246,4 +291,32 @@ public class UserController {
     return "contact";
   }
 
+  @RequestMapping(value = "/viewUsers", method = RequestMethod.GET)
+  public String viewUsers(Model model, HttpSession session) {
+    List<User> users = null;
+    try {
+      User user = (User) session.getAttribute("user");
+      users = userService.doGetAllUsers(user);
+      model.addAttribute("userList", users);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "viewUsers";
+  }
+
+  @RequestMapping(value = "/userStatusUpdate/{userId}", method = RequestMethod.GET)
+  public String adminUserStsUpdate(@PathVariable int userId, Model model, HttpSession session,
+      @RequestParam String sts) {
+    List<User> users = null;
+    try {
+      userService.doChangeAdminUserStatus(userId, sts);
+      User user = (User) session.getAttribute("user");
+      users = userService.doGetAllUsers(user);
+      model.addAttribute("userList", users);
+      model.addAttribute("info", "User updated successfully");
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "viewUsers";
+  }
 }
