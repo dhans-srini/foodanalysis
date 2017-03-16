@@ -34,7 +34,7 @@
 							:
 						</td>
 						<td><form:input path="email" type="email" required="required"
-								placeholder="Enter email" cssClass="inp" /></td>
+								placeholder="Enter email" cssClass="inp" readonly="true" /></td>
 						<td><form:errors path="email" cssClass="error" /></td>
 					</tr>
 					<tr>

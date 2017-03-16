@@ -8,7 +8,7 @@
 <body>
 	<!-- Header Jsp  -->
 	<%@ include file="header.jsp"%>
-	<div style="width: 80%; height: 80%; margin: 0 auto;">
+	<div style="width: 80%; height: 100%; margin: 0 auto;">
 		<section>
 			<h2 class="cen">${param.page eq 'admin'?'Admin ':'User '}
 				Registration</h2>

@@ -1,5 +1,7 @@
-<!--<div style="text-align: center;">
-<a href="./goToAboutus.request">About US</a>    |   
-<a href="./goTocarrer.request">Career</a>     |    
-<a href="./goTocontact.request">Contact us</a>    
-</div> -->
+
+<br />
+<footer
+	style="text-align: center; font-size: 20px; background-color: #f8f8f8;">
+	<a class="sub-btn" href="${pageContext.request.contextPath}">Home</a> <a
+		href="javascript:window.history.back();">Back</a>
+</footer>

@@ -1,31 +1,49 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!-- Header Jsp  -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ include file="header.jsp"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>${param.page eq 'admin'?'Admin ':'User '}Forgotpassword</title>
+</head>
+<body>
+	<!-- Header Jsp  -->
+	<%@ include file="header.jsp"%>
+	<div style="width: 80%; height: 80%; margin: 0 auto; overflow: auto;">
+		<section>
+			<h2 class="cen">${param.page eq 'admin'?'Admin ':'User '}Forgot
+				password</h2>
+			<c:if test="${not empty error}">
+				<span class="error">Error: ${error}</span>
+			</c:if>
+			<span>${info}</span>
 
-<h1 style="">User forgot password</h1>
-<br />
-<div class="col-sm-12">
-	<c:if test="${not empty error}">
-		<span class="error">Error: ${error}</span>
-	</c:if>
-	<span>${info}</span>
-</div>
+			<form method="post" class="cen"
+				action="${pageContext.request.contextPath}/forgotpwd">
+				<input hidden="true" id="page" name="page" value="${param.page}"></input>
+				<table>
+					<tr>
+						<td class="flt_rght">Email :</td>
+						<td><input type="email" id="email" name="email" required
+							placeholder="Enter email"></td>
+					</tr>
+					<tr>
+						<td class="flt_rght">Favourite friend name? :</td>
+						<td><input name="favFriendName"
+							placeholder="Enter friend name" /></td>
+					</tr>
+					<tr>
+						<td class="flt_rght">Favourite movie name? :</td>
+						<td><input name="favMovieName" placeholder="Enter movie name" /></td>
+					</tr>
+				</table>
 
-<div class="col-sm-5">
-	<form method="post"
-		action="${pageContext.request.contextPath}/forgotpwd">
-		<input hidden="true" id="page" name="page" value="${param.page}"></input>
-		<label for="email">Email:</label> <input type="email" id="email"
-			name="email" required placeholder="Enter email"> <br /> <label
-			for="favFriendName">Favourite friend name? </label> <input
-			name="favFriendName" placeholder="Enter friend name" /><br /> <label
-			for="favMovieName">Favourite movie name? </label> <input
-			name="favMovieName" placeholder="Enter movie name" /> <br /> <input
-			type="submit" name="loginBtn" value="Submit" /> <a
-			href="${pageContext.request.contextPath}/views/userLogin.jsp">Back</a>
+				<input type="submit" name="loginBtn" value="Submit" class="sub-btn" />
+				<a href="${pageContext.request.contextPath}/views/userLogin.jsp">Back</a>
 
-	</form>
-</div>
+			</form>
+		</section>
+	</div>
+	<!-- footer Jsp -->
+	<%@ include file="footer.jsp"%>
+</body>
+</html>

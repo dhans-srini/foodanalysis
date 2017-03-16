@@ -78,22 +78,26 @@ ul.topnav li.right {
 }
 </style>
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/bootstrap.min.css">
-<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed"
-				data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-				aria-expanded="false">
+				data-toggle="collapse" data-target="#navbar1">
 				<span class="sr-only">Toggle navigation</span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${pageContext.request.contextPath}">Home</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}"><img
+				src="${pageContext.request.contextPath}/img/logo.png"
+				style="height: 35px;" alt="Food analysis"></a> <a
+				class="navbar-brand" href="${pageContext.request.contextPath}">Home</a>
 			<c:if test="${sessionScope.user ne null}">
 				<a class="navbar-brand"
 					href="${pageContext.request.contextPath}/views/userDashboard.jsp">Dashboard</a>
