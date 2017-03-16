@@ -24,16 +24,17 @@
 					<tr>
 						<td class="flt_rght">Email :</td>
 						<td><input type="email" id="email" name="email" required
-							placeholder="Enter email"></td>
+							class="inp" placeholder="Enter email"></td>
 					</tr>
 					<tr>
 						<td class="flt_rght">Favourite friend name? :</td>
 						<td><input name="favFriendName"
-							placeholder="Enter friend name" /></td>
+							placeholder="Enter friend name" class="inp" /></td>
 					</tr>
 					<tr>
 						<td class="flt_rght">Favourite movie name? :</td>
-						<td><input name="favMovieName" placeholder="Enter movie name" /></td>
+						<td><input name="favMovieName" placeholder="Enter movie name"
+							class="inp" /></td>
 					</tr>
 				</table>
 
