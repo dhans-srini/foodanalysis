@@ -116,7 +116,7 @@ public class UserController {
       if ("adminEdit".equals(page)) {
         user.setStatus("c");
       }
-      user= userService.doUpdateUser(user);
+      user = userService.doUpdateUser(user);
       if (!"adminEdit".equals(page)) {
         session.setAttribute("user", user);
       }
@@ -318,5 +318,73 @@ public class UserController {
       model.addAttribute("error", e.getMessage());
     }
     return "viewUsers";
+  }
+
+  @RequestMapping(value = "/manageFoodItems", method = RequestMethod.GET)
+  public String loadFoodItems(Model model) {
+    List<SearchItem> items = null;
+    try {
+      items = userService.doGetAllFoodItems();
+      model.addAttribute("foodItems", items);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "foodItemsManage";
+  }
+
+  @RequestMapping(value = "/deleteFoodItems/{itemId}", method = RequestMethod.GET)
+  public String deleteFoodItem(Model model, @PathVariable int itemId) {
+    List<SearchItem> items = null;
+    try {
+      userService.doDeleteFoodItem(itemId);
+      items = userService.doGetAllFoodItems();
+      model.addAttribute("foodItems", items);
+      model.addAttribute("info", "Item deleted successfully.");
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "foodItemsManage";
+  }
+
+  @RequestMapping(value = "/foodItem/{id}", method = RequestMethod.GET)
+  public String loadFoodItem(@PathVariable int id, Model model,
+      @RequestParam(required = false) String page) {
+    SearchItem searchItem = null;
+    try {
+      searchItem = userService.doGetFoodItemById(id);
+      model.addAttribute("foodItem", searchItem);
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "/foodItemEdit";
+  }
+
+  @RequestMapping(value = "/createFoodItem", method = RequestMethod.GET)
+  public String loadFoodItem(Model model) {
+    SearchItem searchItem = null;
+    try {
+      searchItem = new SearchItem();
+      model.addAttribute("foodItem", searchItem);
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "/foodItemEdit";
+  }
+
+  @RequestMapping(value = "/doUpdateSearchItem", method = RequestMethod.POST)
+  public String updateUser(@ModelAttribute("foodItem") SearchItem searchItem, Model model) {
+    try {
+      userService.doUpdateFoodItem(searchItem);
+      List<SearchItem> items = userService.doGetAllFoodItems();
+      model.addAttribute("foodItems", items);
+      model.addAttribute("info", "Food Item updated successfully");
+    } catch (BusinessServiceException e) {
+      model.addAttribute("error", e.getMessage());
+      logger.error(e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+      model.addAttribute("error", "System has some issue...");
+    }
+    return "foodItemsManage";
   }
 }

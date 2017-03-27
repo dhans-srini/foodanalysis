@@ -126,4 +126,52 @@ public class UserDAOImpl implements UserDAO {
   }
 
 
+  @Override
+  public List<SearchItem> getAllFoodItems() throws DataServiceException {
+    List<SearchItem> searchItems = null;
+    try {
+      searchItems = dataRetriver.retrieveByHQL("From SearchItem s ");
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+    return searchItems;
+  }
+
+
+  @Override
+  public void deleteFoodItem(int itemId) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("itemId", itemId);
+      dataModifier.executeQuery("delete from SearchItem si where si.id=:itemId", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public SearchItem getFoodItemById(int id) throws DataServiceException {
+    try {
+      Map<String, Object> params = new HashMap<>();
+      params.put("id", id);
+      return dataRetriver.retrieveObjectByHQL("From SearchItem u where u.id=:id", params);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
+  @Override
+  public void saveFoodItem(SearchItem searchItem) throws DataServiceException {
+    try {
+      dataModifier.insert(searchItem);
+    } catch (DuplicateRecordException de) {
+      throw new DataServiceException("Email already exist.", de);
+    } catch (Exception e) {
+      throw new DataServiceException(e.getMessage(), e);
+    }
+  }
+
+
 }

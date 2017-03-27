@@ -15,6 +15,7 @@ import com.foodanalysis.biz.exception.BusinessServiceException;
 import com.foodanalysis.data.UserDAO;
 import com.foodanalysis.data.exception.DataServiceException;
 import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 @Service
@@ -199,6 +200,50 @@ public class UserServiceImpl implements UserService {
       User user = userDAO.getUserById(userId);
       user.setStatus(sts);
       userDAO.saveUser(user);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+  }
+
+  @Override
+  public List<SearchItem> doGetAllFoodItems() throws BusinessServiceException {
+    List<SearchItem> searchItems = null;
+    try {
+      searchItems = userDAO.getAllFoodItems();
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return searchItems;
+  }
+
+  @Override
+  public void doDeleteFoodItem(int itemId) throws BusinessServiceException {
+    try {
+      userDAO.deleteFoodItem(itemId);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+  }
+
+  @Override
+  public SearchItem doGetFoodItemById(int id) throws BusinessServiceException {
+    SearchItem searchItem = null;
+    try {
+      searchItem = userDAO.getFoodItemById(id);
+    } catch (DataServiceException e) {
+      logger.error(e.getMessage(), e);
+      throw new BusinessServiceException(e.getLocalizedMessage(), e);
+    }
+    return searchItem;
+  }
+
+  @Override
+  public void doUpdateFoodItem(SearchItem searchItem) throws BusinessServiceException {
+    try {
+      userDAO.saveFoodItem(searchItem);
     } catch (DataServiceException e) {
       logger.error(e.getMessage(), e);
       throw new BusinessServiceException(e.getLocalizedMessage(), e);

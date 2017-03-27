@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.foodanalysis.biz.exception.BusinessServiceException;
 import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 public interface UserService {
@@ -31,6 +32,14 @@ public interface UserService {
 
 
   void doChangeAdminUserStatus(int userId, String sts) throws BusinessServiceException;
+
+  List<SearchItem> doGetAllFoodItems() throws BusinessServiceException;
+
+  void doDeleteFoodItem(int itemId) throws BusinessServiceException;
+
+  SearchItem doGetFoodItemById(int id) throws BusinessServiceException;
+
+  void doUpdateFoodItem(SearchItem searchItem) throws BusinessServiceException;
 
 
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.foodanalysis.data.exception.DataServiceException;
 import com.foodanalysis.model.ContactUsInfo;
+import com.foodanalysis.model.SearchItem;
 import com.foodanalysis.model.User;
 
 public interface UserDAO {
@@ -20,6 +21,14 @@ public interface UserDAO {
   List<ContactUsInfo> getAllContactUsInfo() throws DataServiceException;
 
   Object[] getSearchItems(String search, String search2) throws DataServiceException;
+
+  List<SearchItem> getAllFoodItems() throws DataServiceException;
+
+  void deleteFoodItem(int itemId) throws DataServiceException;
+
+  SearchItem getFoodItemById(int id) throws DataServiceException;
+
+  void saveFoodItem(SearchItem searchItem) throws DataServiceException;
 
 
 

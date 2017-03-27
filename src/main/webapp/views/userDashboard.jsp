@@ -46,6 +46,10 @@ table thead tr td {
 				<a href="${pageContext.request.contextPath}/views/searchItems.jsp">Search
 					Items</a>
 			</c:if>
+			<c:if test="${sessionScope.user.role eq 'admin'}">
+				<a href="${pageContext.request.contextPath}/manageFoodItems">Manage
+					Food Items</a>
+			</c:if>
 		</section>
 	</div>
 	<!-- footer Jsp -->
